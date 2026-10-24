@@ -6,55 +6,68 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Tracks">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon.png">
 <title>Tracks</title>
 <style>
-:root{color-scheme:light dark;--bg:#eef0f4;--fg:#1a2230;--mut:#78818f;--line:#d9dde4;--acc:#2f4bff;--on:#fff}
-@media(prefers-color-scheme:dark){:root{--bg:#12161d;--fg:#e8ecf3;--mut:#8791a1;--line:#242b36;--acc:#7f94ff;--on:#10131a}}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;margin:0}
-body{background:var(--bg);color:var(--fg);font:16px/1.4 -apple-system,system-ui,"Helvetica Neue",sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
-header{display:flex;align-items:center;gap:8px;padding:18px 20px 10px}
-h1{flex:1;min-width:0;margin:0;font-size:30px;font-weight:700;letter-spacing:-.035em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-button,.pill{font:inherit;color:inherit;background:none;border:0;padding:8px 10px}
-.pill{border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-size:14px}
+:root{color-scheme:light dark;--bg:#f2f2f7;--card:#fff;--fg:#111;--mut:#8e8e93;--line:#e5e5ea;--acc:#2f4bff;--on:#fff;--bar:rgba(255,255,255,.8)}
+@media(prefers-color-scheme:dark){:root{--bg:#000;--card:#1c1c1e;--fg:#fff;--line:#38383a;--acc:#7f94ff;--on:#0a0f2a;--bar:rgba(38,38,40,.8)}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+html,body{height:100%;margin:0;overscroll-behavior:none}
+body{background:var(--bg);color:var(--fg);font:17px/1.35 -apple-system,system-ui,"SF Pro Text","Helvetica Neue",sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+header{padding:0 20px}
+nav{display:flex;align-items:center;gap:18px;height:44px}
+nav i{flex:1}
+nav button,nav label{color:var(--acc);font-size:17px;padding:0}
+h1{margin:2px 0 10px;font-size:34px;line-height:1.1;font-weight:700;letter-spacing:.35px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+button{font:inherit;color:inherit;background:none;border:0;padding:8px}
+button:active,nav label:active{opacity:.4}
 [hidden]{display:none!important}
 #cv:empty{display:none}
-#cv img{width:132px;height:132px;object-fit:cover;border-radius:14px;display:block;margin:4px auto 12px}
-#list{flex:1;overflow:auto;margin:0;padding:0 12px;list-style:none;-webkit-overflow-scrolling:touch}
-li{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:13px 8px;border-bottom:1px solid var(--line)}
+#cv img{width:150px;height:150px;object-fit:cover;border-radius:12px;display:block;margin:2px auto 14px;box-shadow:0 6px 18px rgba(0,0,0,.18)}
+#list{flex:1;overflow:auto;margin:0;padding:0 16px 14px;list-style:none;-webkit-overflow-scrolling:touch;align-content:start}
+li{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:10px 16px;min-height:56px;background:var(--card)}
+li+li{border-top:.5px solid var(--line)}
+li:first-child{border-radius:12px 12px 0 0}
+li:last-child{border-radius:0 0 12px 12px}
+li:only-child{border-radius:12px}
+li:active{background:var(--line)}
+#list:not(.ed) li[data-l]::after{content:'›';margin-left:auto;color:var(--mut);font-size:24px;line-height:1}
 .n{width:28px;color:var(--mut);font-size:13px;font-variant-numeric:tabular-nums}
 .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .a{display:block;font-size:13px;font-weight:400;color:var(--mut)}
-.cv{width:52px;height:52px;border-radius:10px;background:var(--line);overflow:hidden;flex:none;margin-right:8px}
+.cv{width:56px;height:56px;border-radius:8px;background:var(--line);overflow:hidden;flex:none;margin-right:8px}
 .cv img{width:100%;height:100%;object-fit:cover;display:block}
+.np .cv{width:44px;height:44px;margin:0}
 li.on .t{font-weight:700;color:var(--acc)}
 li.on .n{color:var(--acc)}
 .b{flex-basis:100%;padding-left:28px}
-.b button{color:var(--mut);font-size:14px;margin-right:6px}
-li.empty{display:block;border:0;color:var(--mut);text-align:center;margin:48px 24px}
-footer{padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
-#now{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.4em}
-#seek{width:100%;margin:10px 0 2px;accent-color:var(--acc)}
+.b button{color:var(--acc);font-size:15px;padding:6px 12px 6px 0}
+li.empty{display:block;min-height:0;background:none;border:0;color:var(--mut);text-align:center;padding:40px 24px}
+footer{margin:0 10px calc(8px + env(safe-area-inset-bottom));padding:12px 18px 6px;border-radius:24px;background:var(--bar);-webkit-backdrop-filter:blur(24px) saturate(1.8);backdrop-filter:blur(24px) saturate(1.8);box-shadow:0 0 0 .5px var(--line),0 8px 30px rgba(0,0,0,.12)}
+.np{display:flex;align-items:center;gap:12px}
+#now{flex:1;min-width:0;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#seek{-webkit-appearance:none;appearance:none;width:100%;height:20px;background:transparent;margin:8px 0 0}
+#seek::-webkit-slider-runnable-track{height:4px;border-radius:2px;background:linear-gradient(to right,var(--acc) var(--p,0%),var(--line) 0)}
+#seek::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;margin-top:-5px;border-radius:50%;background:var(--fg)}
 #tm{color:var(--mut);font-size:12px;font-variant-numeric:tabular-nums}
-.ctl{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
-.ctl button{font-size:14px;color:var(--mut)}
-.ctl button.on{color:var(--acc);font-weight:600}
-#pp{background:var(--acc);color:var(--on);border-radius:99px;padding:12px 28px;font-weight:600;font-size:16px}
+.ctl{display:flex;align-items:center;justify-content:space-between;padding:2px 6px}
+.ctl button{color:var(--fg);width:48px;height:48px;display:grid;place-items:center;padding:0}
+.ctl button.on{color:var(--acc)}
+#pp{width:60px;height:60px;border-radius:50%;background:var(--acc);color:var(--on)}
 </style>
 </head>
 <body>
-<header><button id="bk" class="pill" hidden>Back</button><h1 id="h">Tracks</h1><button id="ed" class="pill">Edit</button><button id="nw" class="pill">New</button><label id="ad" class="pill">Add<input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></header>
+<header><nav><button id="bk" hidden>‹ Tracks</button><i></i><button id="ed">Edit</button><button id="nw">New</button><label id="ad">Add<input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></nav><h1 id="h">Tracks</h1></header>
 <div id="cv"></div>
 <ul id="list"></ul>
 <input id="cf" type="file" accept="image/*" hidden>
 <footer>
-<div id="now">Nothing playing</div>
+<div class="np"><span class="cv" id="art"></span><div id="now">Nothing playing</div></div>
 <input id="seek" type="range" min="0" max="1000" value="0">
-<div id="tm">0:00 / 0:00<span style="float:right">v6</span></div>
-<div class="ctl"><button id="sh">Shuffle</button><button id="pv">Prev</button><button id="pp">Play</button><button id="nx">Next</button><button id="rp">Repeat</button></div>
+<div id="tm">0:00 / 0:00<span style="float:right">v7</span></div>
+<div class="ctl"><button id="sh" aria-label="Shuffle"></button><button id="pv" aria-label="Previous"></button><button id="pp" aria-label="Play or pause"></button><button id="nx" aria-label="Next"></button><button id="rp" aria-label="Repeat"></button></div>
 </footer>
 <audio id="au" preload="auto"></audio>
 <script>
@@ -93,7 +106,7 @@ function render(){
  }
  $('#sh').className=shuf?'on':'';
  $('#rp').className=rep?'on':'';
- $('#rp').textContent=['Repeat','Repeat all','Repeat one'][rep];
+ $('#rp').innerHTML=rep===2?I.r1:I.rp;$('#list').className=edit?'ed':'';$('#art').innerHTML=cov[pl]?`<img src="${cov[pl]}">`:'';
  const c=all.find(x=>x.id===pid);
  $('#now').textContent=c?(c.author?c.author+' – ':'')+c.name:'Nothing playing';
 }
@@ -183,10 +196,10 @@ const next=()=>{const t=pick(1);if(t)play(t,pl)};
 const prev=()=>{if(au.currentTime>3)au.currentTime=0;else{const t=pick(-1);if(t)play(t,pl)}};
 
 au.onended=()=>{if(!url)return;rep===2?play(q()[ci()],pl):next()};
-au.onplay=au.onpause=()=>{$('#pp').textContent=au.paused?'Play':'Pause'};
+au.onplay=au.onpause=()=>{$('#pp').innerHTML=au.paused?I.play:I.pause};
 au.ontimeupdate=()=>{
  if(!url)return;
- if(!drag&&au.duration)$('#seek').value=au.currentTime/au.duration*1000;
+ if(!drag&&au.duration){$('#seek').value=au.currentTime/au.duration*1000;$('#seek').style.setProperty('--p',$('#seek').value/10+'%')}
  $('#tm').firstChild.textContent=fmt(au.currentTime)+' / '+fmt(au.duration);
  try{navigator.mediaSession.setPositionState({duration:au.duration,position:au.currentTime,playbackRate:1})}catch(x){}
 };
@@ -216,6 +229,17 @@ $('#list').onclick=e=>{
  a==='del'?delTrack(t):a==='ren'?renameTrack(t):a==='mv'?moveTrack(t):a==='up'?reorder(t,-1):a==='dn'?reorder(t,1):play(t,lv);
 };
 if('mediaSession' in navigator)for(const [a,f] of [['play',()=>au.play()],['pause',()=>au.pause()],['previoustrack',prev],['nexttrack',next],['seekto',e=>{au.currentTime=e.seekTime}]])try{navigator.mediaSession.setActionHandler(a,f)}catch(x){}
+
+const S='fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"';
+const ic=(d,n=24)=>`<svg viewBox="0 0 24 24" width="${n}" height="${n}" fill="currentColor">${d}</svg>`;
+const I={
+ play:ic('<path d="M8 5v14l11-7z"/>',30),pause:ic('<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>',30),
+ pv:ic('<path d="M6 5h2v14H6zM20 5v14L9 12z"/>'),nx:ic('<path d="M16 5h2v14h-2zM4 5v14l11-7z"/>'),
+ sh:ic(`<path ${S} d="M3 6h3.5c3 0 4.5 3 6 6s3 6 6 6H21M3 18h3.5c1.5 0 2.7-.8 3.7-2M13.8 8c1-1.2 2.2-2 3.7-2H21M18 3l3 3-3 3M18 15l3 3-3 3"/>`),
+ rp:ic(`<path ${S} d="M17 2l4 4-4 4M3 11V9a3 3 0 0 1 3-3h15M7 22l-4-4 4-4M21 13v2a3 3 0 0 1-3 3H3"/>`)
+};
+I.r1=I.rp.replace('</svg>','<text x="12" y="15" font-size="8" font-weight="700" text-anchor="middle" fill="currentColor">1</text></svg>');
+$('#sh').innerHTML=I.sh;$('#pv').innerHTML=I.pv;$('#nx').innerHTML=I.nx;$('#pp').innerHTML=I.play;
 
 (async()=>{
  db=await open();await load();
