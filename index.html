@@ -5,12 +5,12 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="Tracks">
+<meta name="apple-mobile-web-app-title" content="Stash">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#202020">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon.png">
-<title>Tracks</title>
+<title>Stash</title>
 <style>
 :root{color-scheme:light;--bg:#e6ede8;--card:rgba(249,251,248,.86);--fg:#15251f;--mut:#506159;--line:rgba(34,62,51,.16);--acc:#285344;--on:#f7faf5;--bar:rgba(238,244,239,.78);--page-gradient:radial-gradient(ellipse at 85% 4%,rgba(255,255,255,.76),transparent 34%),linear-gradient(155deg,#dbe8e0 0%,#edf2ee 50%,#dfe9e2 100%);--welcome-gradient:radial-gradient(ellipse at 73% 31%,rgba(149,191,168,.22),transparent 38%),radial-gradient(ellipse at 16% 78%,rgba(58,102,82,.38),transparent 38%),linear-gradient(155deg,#142d27 0%,#31594a 50%,#1d3930 100%);--disc-gradient:radial-gradient(circle at 38% 32%,rgba(240,248,241,.76),rgba(172,205,184,.26) 38%,rgba(47,88,68,.32) 72%);--player-gradient:radial-gradient(ellipse at 50% 22%,#c7d1c9,#748a80 60%,#425b51);--empty-art-gradient:linear-gradient(145deg,#c5dccf,#edf4ec);--ease:cubic-bezier(.2,.75,.25,1)}
 body[data-theme="lagoon"]{--bg:#e4edef;--card:rgba(249,252,252,.88);--fg:#17292d;--mut:#4e666b;--line:rgba(31,68,75,.16);--acc:#27606a;--on:#f5fbfb;--bar:rgba(235,245,246,.8);--page-gradient:radial-gradient(ellipse at 85% 4%,rgba(255,255,255,.82),transparent 34%),linear-gradient(155deg,#d6e6e8 0%,#edf3f3 50%,#d9e8e8 100%);--welcome-gradient:radial-gradient(ellipse at 73% 31%,rgba(130,200,202,.2),transparent 38%),radial-gradient(ellipse at 16% 78%,rgba(37,104,115,.36),transparent 38%),linear-gradient(155deg,#142f36 0%,#2b5a62 50%,#183940 100%);--disc-gradient:radial-gradient(circle at 38% 32%,rgba(239,250,250,.78),rgba(155,207,210,.26) 38%,rgba(37,100,110,.34) 72%);--player-gradient:radial-gradient(ellipse at 50% 22%,#bdD8d8,#5b8b90 60%,#284c55);--empty-art-gradient:linear-gradient(145deg,#c0dfe0,#edf5f4)}
@@ -163,14 +163,14 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
 </style>
 </head>
 <body data-theme="mono" data-accent="welcome">
-<section id="welcome" hidden aria-label="Welcome to Tracks">
- <div class="welcome-mark">Tracks · your music, your space<button id="welcomeSettings" type="button">Settings</button></div>
+<section id="welcome" hidden aria-label="Welcome to Stash">
+ <div class="welcome-mark">Stash · your music, your space<button id="welcomeSettings" type="button">Settings</button></div>
  <div class="welcome-art"><div class="welcome-disc" id="welcomeDisc"><svg viewBox="0 0 120 120" fill="none"><path d="M26 60h8m6-17v34m16-49v64m18-46v28m16-44v60m16-39v18" stroke="#f8f8f2" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="60" r="51" stroke="rgba(248,248,242,.38)" stroke-width="1.5"/></svg></div></div>
- <div class="welcome-copy"><div class="welcome-kicker">A little room to listen</div><h2>Make space<br>for sound.</h2><p>Your music stays yours. Add a few tracks and settle in.</p></div>
+ <div class="welcome-copy"><div class="welcome-kicker">A little room to listen</div><h2>Make space<br>for sound.</h2><p>Your music stays yours. Add a few Stash and settle in.</p></div>
  <div class="welcome-actions"><button id="welcomeStart">Start listening</button><button id="welcomeImport">Add music</button></div>
 </section>
 <input id="welcomeArtworkFile" type="file" accept="image/*" hidden>
-<header><nav><button id="bk" hidden>‹ Tracks</button><i></i><button id="settingsOpen" aria-haspopup="dialog" aria-label="Open settings">Settings</button><button id="ed">Edit</button><button id="nw">New</button><label id="ad" role="button" tabindex="0" aria-label="Add audio tracks">Add<input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></nav><h1 id="h">Tracks</h1></header>
+<header><nav><button id="bk" hidden>‹ Stash</button><i></i><button id="settingsOpen" aria-haspopup="dialog" aria-label="Open settings">Settings</button><button id="ed">Edit</button><button id="nw">New</button><label id="ad" role="button" tabindex="0" aria-label="Add audio Stash">Add<input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></nav><h1 id="h">Stash</h1></header>
 <div id="cv"></div>
 <p id="editHint" hidden>Drag the grip to reorder · tap ••• for track actions</p>
 <ul id="list" aria-label="Your playlists"></ul>
@@ -185,7 +185,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
  <div class="player-top"><button id="playerBack" aria-label="Back to library"></button><span class="player-label">NOW PLAYING</span><div class="player-top-actions"><button class="player-round" id="lyricsToggle" type="button" aria-label="Show lyrics" aria-expanded="false"></button><button aria-label="Close player" id="playerClose">×</button></div></div>
  <div class="player-art-wrap"><img class="player-art" id="playerArt" alt="" role="button" tabindex="0" aria-label="Expand artwork"></div>
  <div id="lyricsPanel" class="lyrics-panel" hidden><div class="lyrics-head"><span>Lyrics</span><button id="lyricsClose" type="button" aria-label="Close lyrics">×</button></div><div id="lyricsText"></div></div>
- <div class="player-bottom"><div class="player-title-row"><div class="player-title"><h2 id="playerTitle" aria-live="polite">Nothing playing</h2><p id="playerArtist">Tracks</p></div><div class="player-extras"><button class="player-round" id="playerShuffle" aria-label="Shuffle" aria-pressed="false"></button><button class="player-round" id="playerRepeat" aria-label="Repeat off" aria-pressed="false"></button></div></div>
+ <div class="player-bottom"><div class="player-title-row"><div class="player-title"><h2 id="playerTitle" aria-live="polite">Nothing playing</h2><p id="playerArtist">Stash</p></div><div class="player-extras"><button class="player-round" id="playerShuffle" aria-label="Shuffle" aria-pressed="false"></button><button class="player-round" id="playerRepeat" aria-label="Repeat off" aria-pressed="false"></button></div></div>
  <input class="player-seek" id="playerSeek" type="range" min="0" max="1000" value="0" aria-label="Track position"><div class="player-times"><span id="playerElapsed">0:00</span><span id="playerDuration">0:00</span></div>
  <div class="player-transport"><button id="playerPrev" aria-label="Previous track"></button><button id="playerToggle" aria-label="Play or pause"></button><button id="playerNext" aria-label="Next track"></button></div></div>
 </section>
@@ -217,7 +217,7 @@ const esc=s=>s.replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const inList=l=>all.filter(t=>(t.list||'')===l).sort((a,b)=>a.order-b.order);
-const open=()=>new Promise((ok,no)=>{const r=indexedDB.open('tracks',2);
+const open=()=>new Promise((ok,no)=>{const r=indexedDB.open('Stash',2);
  r.onupgradeneeded=()=>{const d=r.result;for(const [n,o] of [['meta',{keyPath:'id'}],['lists',{keyPath:'id'}],['blob']])if(!d.objectStoreNames.contains(n))d.createObjectStore(n,o)};
  r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
 const run=(st,mode,fn)=>new Promise((ok,no)=>{const t=db.transaction(st,mode);let r;
@@ -258,7 +258,7 @@ function applyTheme(name,save=true){
  $('#accentSettings').hidden=name!=='mono';
  if(name==='mono')applyAccent(accentChoice,false);
  else{document.body.dataset.accent='theme';document.body.style.setProperty('--custom-accent',customAccent);document.querySelectorAll('[data-accent-choice]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.accentChoice===accentChoice)))}
- if(save)try{localStorage.setItem('tracks-theme',name)}catch(x){}
+ if(save)try{localStorage.setItem('Stash-theme',name)}catch(x){}
 }
 function applyAccent(name,save=true){
  if(!['welcome','theme','custom'].includes(name))name='welcome';
@@ -266,7 +266,7 @@ function applyAccent(name,save=true){
  document.body.dataset.accent=name;
  document.body.style.setProperty('--custom-accent',customAccent);
  document.querySelectorAll('[data-accent-choice]').forEach(b=>b.setAttribute('aria-checked',String(b.dataset.accentChoice===name)));
- if(save)try{localStorage.setItem('tracks-accent',name)}catch(x){}
+ if(save)try{localStorage.setItem('Stash-accent',name)}catch(x){}
 }
 function openSettings(){settingsReturnFocus=document.activeElement;$('#settingsSheet').hidden=false;$('#settingsClose').focus()}
 function closeSettings(){
@@ -277,15 +277,15 @@ function closeSettings(){
 function render(){
  const home=lv===null,L=home?null:lv===''?{name:'Unsorted'}:lists.find(x=>x.id===lv);
  if(!home&&!L){lv=null;return render()}
- $('#h').textContent=home?'Tracks':L.name;
- $('#list').setAttribute('aria-label',home?'Your playlists':`Tracks in ${L.name}`);
+ $('#h').textContent=home?'Stash':L.name;
+ $('#list').setAttribute('aria-label',home?'Your playlists':`Stash in ${L.name}`);
  $('#bk').hidden=home;$('#nw').hidden=!home;
  $('#ed').textContent=edit?'Done':'Edit';
  $('#editHint').hidden=!(edit&&lv!==null);$('#editHint').textContent='Drag the grip to reorder · tap ••• for track actions';
  $('#cv').innerHTML=!home&&cov[lv]?`<img src="${cov[lv]}">`:'';
  if(home){
   const rows=[...lists,...(inList('').length?[{id:'',name:'Unsorted'}]:[])];
-  $('#list').innerHTML=rows.map(l=>`<li data-l="${l.id}" role="${edit?'group':'button'}" tabindex="${edit?'-1':'0'}" aria-label="${esc(l.name)}, ${inList(l.id).length} tracks"><span class="cv">${cov[l.id]?`<img src="${cov[l.id]}" alt="">`:''}</span><span class="t">${esc(l.name)}<span class="a">${inList(l.id).length} tracks</span></span>${edit&&l.id?`<button type="button" class="edit-more" data-expand-edit aria-label="Playlist actions" aria-expanded="false">${I.more}</button><span class="b">${actionButton('cov','Change playlist cover')}${actionButton('ren','Rename playlist')}${actionButton('del','Delete playlist')}</span>`:''}</li>`).join('')||'<li class="empty">Tap “New” to make a playlist.</li>';
+  $('#list').innerHTML=rows.map(l=>`<li data-l="${l.id}" role="${edit?'group':'button'}" tabindex="${edit?'-1':'0'}" aria-label="${esc(l.name)}, ${inList(l.id).length} Stash"><span class="cv">${cov[l.id]?`<img src="${cov[l.id]}" alt="">`:''}</span><span class="t">${esc(l.name)}<span class="a">${inList(l.id).length} Stash</span></span>${edit&&l.id?`<button type="button" class="edit-more" data-expand-edit aria-label="Playlist actions" aria-expanded="false">${I.more}</button><span class="b">${actionButton('cov','Change playlist cover')}${actionButton('ren','Rename playlist')}${actionButton('del','Delete playlist')}</span>`:''}</li>`).join('')||'<li class="empty">Tap “New” to make a playlist.</li>';
  }else{
   $('#list').innerHTML=inList(lv).map((t,i)=>`<li data-track-id="${t.id}" data-i="${i}" class="${t.id===pid&&lv===pl?'on':''}" role="${edit?'group':'button'}" tabindex="${edit?'-1':'0'}" aria-label="${esc(t.name)}${t.author?`, by ${esc(t.author)}`:''}${t.id===pid&&lv===pl?', currently playing':''}" ${t.id===pid&&lv===pl?'aria-current="true"':''}><span class="cv">${trackCov[t.id]||cov[t.list]?`<img src="${trackCov[t.id]||cov[t.list]}" alt="">`:''}</span><span class="t">${esc(t.name)}${t.author?`<span class="a">${esc(t.author)}</span>`:''}</span><span class="n" aria-hidden="true">${i+1}</span>${edit?`<button type="button" class="drag-handle" data-drag-handle aria-label="Reorder ${esc(t.name)}" title="Drag to reorder">${I.grip}</button><button type="button" class="edit-more" data-expand-edit aria-label="Track actions" aria-expanded="false">${I.more}</button><span class="b">${actionButton('cover','Change song artwork')}${actionButton('lyrics',t.lyrics?'Edit lyrics':'Add lyrics')}${actionButton('ren','Rename track')}${actionButton('mv','Move to playlist')}${actionButton('del','Delete track')}</span>`:''}</li>`).join('')||'<li class="empty">Tap “Add” to import audio from Files.</li>';
  }
@@ -301,7 +301,7 @@ function renderPlayer(){
  const cover=trackCov[c.id]||cov[c.list]||'';
  $('#playerScreen').classList.remove('art-expanded');$('#lyricsPanel').hidden=true;
  $('#playerArt').classList.remove('expanded');$('#playerArt').setAttribute('aria-label','Expand artwork');$('#playerArt').setAttribute('aria-expanded','false');
- $('#playerTitle').textContent=c.name;$('#playerArtist').textContent=c.author||'Tracks';
+ $('#playerTitle').textContent=c.name;$('#playerArtist').textContent=c.author||'Stash';
  renderLyrics(c);$('#lyricsToggle').innerHTML=I.lyricsSmall;$('#lyricsToggle').setAttribute('aria-label','Show lyrics');$('#lyricsToggle').setAttribute('aria-expanded','false');
  const art=$('#playerArt');art.classList.remove('art-change');void art.offsetWidth;if(cover){art.src=cover;art.classList.add('art-change')}else art.removeAttribute('src');
  $('#playerToggle').innerHTML=au.paused?I.play:I.pause;
@@ -344,7 +344,7 @@ async function renameList(id){
 }
 async function delList(id){
  const l=lists.find(x=>x.id===id);
- if(!confirm(`Delete “${l.name}”? Its tracks move to Unsorted.`))return;
+ if(!confirm(`Delete “${l.name}”? Its Stash move to Unsorted.`))return;
  const ts=inList(id);
  await run(['meta','lists','blob'],'readwrite',(m,s,b)=>{ts.forEach(t=>m.put({...t,list:''}));s.delete(id);b.delete('c:'+id)});
  if(cov[id]){URL.revokeObjectURL(cov[id]);delete cov[id]}
@@ -466,8 +466,8 @@ $('#lyricsEditorClose').onclick=closeLyricsEditor;$('#lyricsCancel').onclick=clo
 $('#lyricsInput').onkeydown=e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();saveLyrics()}};
 $('#themeOptions').onclick=e=>{const b=e.target.closest('[data-theme-choice]');if(b)applyTheme(b.dataset.themeChoice)};
 $('#accentOptions').onclick=e=>{const b=e.target.closest('[data-accent-choice]');if(b)applyAccent(b.dataset.accentChoice)};
-$('#customAccentColor').oninput=e=>{customAccent=e.target.value;document.body.style.setProperty('--custom-accent',customAccent);applyAccent('custom');try{localStorage.setItem('tracks-custom-accent',customAccent)}catch(x){}};
-$('#lyricsTrackingToggle').onclick=()=>{lyricsTracking=!lyricsTracking;$('#lyricsTrackingToggle').setAttribute('aria-checked',String(lyricsTracking));try{localStorage.setItem('tracks-lyrics-tracking',String(lyricsTracking))}catch(x){}const c=all.find(x=>x.id===pid);if(c)renderLyrics(c)};
+$('#customAccentColor').oninput=e=>{customAccent=e.target.value;document.body.style.setProperty('--custom-accent',customAccent);applyAccent('custom');try{localStorage.setItem('Stash-custom-accent',customAccent)}catch(x){}};
+$('#lyricsTrackingToggle').onclick=()=>{lyricsTracking=!lyricsTracking;$('#lyricsTrackingToggle').setAttribute('aria-checked',String(lyricsTracking));try{localStorage.setItem('Stash-lyrics-tracking',String(lyricsTracking))}catch(x){}const c=all.find(x=>x.id===pid);if(c)renderLyrics(c)};
 $('#artworkChangeBtn').onclick=()=>$('#welcomeArtworkFile').click();
 $('#artworkRemoveBtn').onclick=async()=>{await run(['blob'],'readwrite',s=>s.delete('welcome-art'));applyWelcomeArtwork(null)};
  $('#playerBack').onclick=closePlayer;$('#playerClose').onclick=closePlayer;
@@ -493,7 +493,7 @@ document.addEventListener('keydown',e=>{
   else if(!e.shiftKey&&document.activeElement===items.at(-1)){e.preventDefault();items[0].focus()}
  }
 });
-const leaveWelcome=()=>{ $('#welcome').hidden=true;try{localStorage.setItem('tracks-welcome-seen','1')}catch(x){} };
+const leaveWelcome=()=>{ $('#welcome').hidden=true;try{localStorage.setItem('Stash-welcome-seen','1')}catch(x){} };
 $('#welcomeStart').onclick=leaveWelcome;
 $('#welcomeImport').onclick=()=>$('#f').click();
 $('#welcomeArtworkFile').onchange=async e=>{await saveWelcomeArtwork(e.target.files[0]);e.target.value=''};
@@ -548,8 +548,8 @@ $('#playerBack').innerHTML=I.back;$('#playerClose').innerHTML=I.close;$('#lyrics
 $('#lyricsEditorClose').innerHTML=I.close;
 
 (async()=>{
- let theme='mono';try{theme=localStorage.getItem('tracks-theme')||theme;accentChoice=localStorage.getItem('tracks-accent')||accentChoice;customAccent=localStorage.getItem('tracks-custom-accent')||customAccent;lyricsTracking=localStorage.getItem('tracks-lyrics-tracking')!=='false'}catch(x){}$('#customAccentColor').value=customAccent;$('#lyricsTrackingToggle').setAttribute('aria-checked',String(lyricsTracking));applyTheme(theme,false);
- try{$('#welcome').hidden=!!localStorage.getItem('tracks-welcome-seen')}catch(x){$('#welcome').hidden=false}
+ let theme='mono';try{theme=localStorage.getItem('Stash-theme')||theme;accentChoice=localStorage.getItem('Stash-accent')||accentChoice;customAccent=localStorage.getItem('Stash-custom-accent')||customAccent;lyricsTracking=localStorage.getItem('Stash-lyrics-tracking')!=='false'}catch(x){}$('#customAccentColor').value=customAccent;$('#lyricsTrackingToggle').setAttribute('aria-checked',String(lyricsTracking));applyTheme(theme,false);
+ try{$('#welcome').hidden=!!localStorage.getItem('Stash-welcome-seen')}catch(x){$('#welcome').hidden=false}
  if(!$('#welcome').hidden)$('#welcomeStart').focus();
  db=await open();await load();
  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
