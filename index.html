@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Tracks">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="icon.png">
+<title>Tracks</title>
+<style>
+:root{color-scheme:light dark;--bg:#eef0f4;--fg:#1a2230;--mut:#78818f;--line:#d9dde4;--acc:#2f4bff;--on:#fff}
+@media(prefers-color-scheme:dark){:root{--bg:#12161d;--fg:#e8ecf3;--mut:#8791a1;--line:#242b36;--acc:#7f94ff;--on:#10131a}}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;margin:0}
+body{background:var(--bg);color:var(--fg);font:16px/1.4 -apple-system,system-ui,"Helvetica Neue",sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
+header{display:flex;align-items:center;gap:8px;padding:18px 20px 10px}
+h1{flex:1;margin:0;font-size:32px;font-weight:700;letter-spacing:-.035em}
+button,.pill{font:inherit;color:inherit;background:none;border:0;padding:8px 10px}
+.pill{border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-size:14px}
+#list{flex:1;overflow:auto;margin:0;padding:0 12px;list-style:none;-webkit-overflow-scrolling:touch}
+li{display:flex;align-items:center;gap:4px;padding:13px 8px;border-bottom:1px solid var(--line)}
+.n{width:28px;color:var(--mut);font-size:13px;font-variant-numeric:tabular-nums}
+.t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+li.on .t{font-weight:700;color:var(--acc)}
+li.on .n{color:var(--acc)}
+li button{color:var(--mut);font-size:14px}
+li.empty{display:block;border:0;color:var(--mut);text-align:center;margin:48px 24px}
+footer{padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
+#now{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.4em}
+#seek{width:100%;margin:10px 0 2px;accent-color:var(--acc)}
+#tm{color:var(--mut);font-size:12px;font-variant-numeric:tabular-nums}
+.ctl{display:flex;align-items:center;justify-content:space-between;margin-top:6px}
+.ctl button{font-size:14px;color:var(--mut)}
+.ctl button.on{color:var(--acc);font-weight:600}
+#pp{background:var(--acc);color:var(--on);border-radius:99px;padding:12px 28px;font-weight:600;font-size:16px}
+</style>
+</head>
+<body>
+<header><h1>Tracks</h1><button id="ed" class="pill">Edit</button><label class="pill">Add<input id="f" type="file" accept="audio/*" multiple hidden></label></header>
+<ul id="list"></ul>
+<footer>
+<div id="now">Nothing playing</div>
+<input id="seek" type="range" min="0" max="1000" value="0">
+<div id="tm">0:00 / 0:00</div>
+<div class="ctl"><button id="sh">Shuffle</button><button id="pv">Prev</button><button id="pp">Play</button><button id="nx">Next</button><button id="rp">Repeat</button></div>
+</footer>
+<audio id="au" preload="auto"></audio>
+<script>
+const $=s=>document.querySelector(s),au=$('#au');
+const SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
+let db,tracks=[],cur=-1,shuf=false,rep=0,edit=false,url=null,drag=false;
+const esc=s=>s.replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
+const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
+const open=()=>new Promise((ok,no)=>{const r=indexedDB.open('tracks',1);
+ r.onupgradeneeded=()=>{r.result.createObjectStore('meta',{keyPath:'id'});r.result.createObjectStore('blob')};
+ r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
+const run=(st,mode,fn)=>new Promise((ok,no)=>{const t=db.transaction(st,mode);let r;
+ try{r=fn(...st.map(s=>t.objectStore(s)))}catch(x){no(x);return}
+ t.oncomplete=()=>ok(r&&r.result);t.onerror=t.onabort=()=>no(t.error)});
+
+async function load(){
+ const id=tracks[cur]&&tracks[cur].id;
+ tracks=(await run(['meta'],'readonly',m=>m.getAll())).sort((a,b)=>a.order-b.order);
+ cur=tracks.findIndex(t=>t.id===id);
+ render();
+}
+function render(){
+ $('#list').innerHTML=tracks.map((t,i)=>`<li data-i="${i}" class="${i===cur?'on':''}"><span class="n">${i+1}</span><span class="t">${esc(t.name)}</span>${edit?'<button data-a="up">↑</button><button data-a="dn">↓</button><button data-a="del">Delete</button>':''}</li>`).join('')||'<li class="empty">Tap “Add” to import audio from Files.</li>';
+ $('#ed').textContent=edit?'Done':'Edit';
+ $('#sh').className=shuf?'on':'';
+ $('#rp').className=rep?'on':'';
+ $('#rp').textContent=['Repeat','Repeat all','Repeat one'][rep];
+ $('#now').textContent=tracks[cur]?tracks[cur].name:'Nothing playing';
+}
+async function add(files){
+ let o=tracks.reduce((m,t)=>Math.max(m,t.order),0);
+ for(const f of files){
+  const id=Date.now().toString(36)+Math.random().toString(36).slice(2);
+  await run(['meta','blob'],'readwrite',(m,b)=>{m.put({id,name:f.name.replace(/\.[^.]+$/,''),order:++o});b.put(f,id)});
+ }
+ await load();
+}
+async function del(i){
+ const t=tracks[i];
+ if(!confirm(`Delete “${t.name}”?`))return;
+ await run(['meta','blob'],'readwrite',(m,b)=>{m.delete(t.id);b.delete(t.id)});
+ if(i===cur){au.pause();au.removeAttribute('src');au.load();if(url)URL.revokeObjectURL(url);url=null}
+ await load();
+}
+async function move(i,d){
+ const j=i+d;if(j<0||j>=tracks.length)return;
+ const a=tracks[i],b=tracks[j];
+ await run(['meta'],'readwrite',m=>{m.put({...a,order:b.order});m.put({...b,order:a.order})});
+ await load();
+}
+async function play(i){
+ const t=tracks[i];if(!t)return;
+ if(!au.getAttribute('src')){au.src=SILENT;au.play().catch(()=>{})} // unlocks audio inside the tap
+ cur=i;render();
+ const b=await run(['blob'],'readonly',s=>s.get(t.id));
+ if(url)URL.revokeObjectURL(url);
+ au.src=url=URL.createObjectURL(b);
+ try{await au.play()}catch(x){}
+ if('mediaSession' in navigator)navigator.mediaSession.metadata=new MediaMetadata({title:t.name,artist:'Tracks'});
+}
+function pick(d){
+ const n=tracks.length;if(!n)return -1;
+ if(shuf&&n>1){let j;do j=Math.floor(Math.random()*n);while(j===cur);return j}
+ const k=cur+d;
+ return k>=0&&k<n?k:rep===1?(k<0?n-1:0):-1;
+}
+const next=()=>{const k=pick(1);if(k>=0)play(k)};
+const prev=()=>{if(au.currentTime>3)au.currentTime=0;else{const k=pick(-1);if(k>=0)play(k)}};
+
+au.onended=()=>{if(!url)return;rep===2?play(cur):next()};
+au.onplay=au.onpause=()=>{$('#pp').textContent=au.paused?'Play':'Pause'};
+au.ontimeupdate=()=>{
+ if(!url)return;
+ if(!drag&&au.duration)$('#seek').value=au.currentTime/au.duration*1000;
+ $('#tm').textContent=fmt(au.currentTime)+' / '+fmt(au.duration);
+ try{navigator.mediaSession.setPositionState({duration:au.duration,position:au.currentTime,playbackRate:1})}catch(x){}
+};
+$('#seek').oninput=()=>{drag=true};
+$('#seek').onchange=()=>{au.currentTime=$('#seek').value/1000*au.duration;drag=false};
+$('#pp').onclick=()=>url?(au.paused?au.play():au.pause()):play(Math.max(cur,0));
+$('#pv').onclick=prev;$('#nx').onclick=next;
+$('#sh').onclick=()=>{shuf=!shuf;render()};
+$('#rp').onclick=()=>{rep=(rep+1)%3;render()};
+$('#ed').onclick=()=>{edit=!edit;render()};
+$('#f').onchange=async e=>{await add([...e.target.files]);e.target.value=''};
+$('#list').onclick=e=>{
+ const li=e.target.closest('li[data-i]');if(!li)return;
+ const i=+li.dataset.i,a=e.target.dataset.a;
+ a==='del'?del(i):a?move(i,a==='up'?-1:1):play(i);
+};
+if('mediaSession' in navigator)for(const [a,f] of [['play',()=>au.play()],['pause',()=>au.pause()],['previoustrack',prev],['nexttrack',next],['seekto',e=>{au.currentTime=e.seekTime}]])try{navigator.mediaSession.setActionHandler(a,f)}catch(x){}
+
+(async()=>{
+ db=await open();await load();
+ if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
+ if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js');
+})();
+</script>
+</body>
+</html>
