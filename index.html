@@ -17,16 +17,23 @@
 html,body{height:100%;margin:0}
 body{background:var(--bg);color:var(--fg);font:16px/1.4 -apple-system,system-ui,"Helvetica Neue",sans-serif;display:flex;flex-direction:column;padding-top:env(safe-area-inset-top)}
 header{display:flex;align-items:center;gap:8px;padding:18px 20px 10px}
-h1{flex:1;margin:0;font-size:32px;font-weight:700;letter-spacing:-.035em}
+h1{flex:1;min-width:0;margin:0;font-size:30px;font-weight:700;letter-spacing:-.035em;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 button,.pill{font:inherit;color:inherit;background:none;border:0;padding:8px 10px}
 .pill{border:1px solid var(--line);border-radius:99px;padding:8px 16px;font-size:14px}
+[hidden]{display:none!important}
+#cv:empty{display:none}
+#cv img{width:132px;height:132px;object-fit:cover;border-radius:14px;display:block;margin:4px auto 12px}
 #list{flex:1;overflow:auto;margin:0;padding:0 12px;list-style:none;-webkit-overflow-scrolling:touch}
-li{display:flex;align-items:center;gap:4px;padding:13px 8px;border-bottom:1px solid var(--line)}
+li{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:13px 8px;border-bottom:1px solid var(--line)}
 .n{width:28px;color:var(--mut);font-size:13px;font-variant-numeric:tabular-nums}
 .t{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.a{display:block;font-size:13px;font-weight:400;color:var(--mut)}
+.cv{width:52px;height:52px;border-radius:10px;background:var(--line);overflow:hidden;flex:none;margin-right:8px}
+.cv img{width:100%;height:100%;object-fit:cover;display:block}
 li.on .t{font-weight:700;color:var(--acc)}
 li.on .n{color:var(--acc)}
-li button{color:var(--mut);font-size:14px}
+.b{flex-basis:100%;padding-left:28px}
+.b button{color:var(--mut);font-size:14px;margin-right:6px}
 li.empty{display:block;border:0;color:var(--mut);text-align:center;margin:48px 24px}
 footer{padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px solid var(--line)}
 #now{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-height:1.4em}
@@ -39,8 +46,10 @@ footer{padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px
 </style>
 </head>
 <body>
-<header><h1>Tracks</h1><button id="ed" class="pill">Edit</button><label class="pill">Add<input id="f" type="file" accept="audio/*" multiple hidden></label></header>
+<header><button id="bk" class="pill" hidden>Back</button><h1 id="h">Tracks</h1><button id="ed" class="pill">Edit</button><button id="nw" class="pill">New</button><label id="ad" class="pill">Add<input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></header>
+<div id="cv"></div>
 <ul id="list"></ul>
+<input id="cf" type="file" accept="image/*" hidden>
 <footer>
 <div id="now">Nothing playing</div>
 <input id="seek" type="range" min="0" max="1000" value="0">
@@ -51,71 +60,129 @@ footer{padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px
 <script>
 const $=s=>document.querySelector(s),au=$('#au');
 const SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-let db,tracks=[],cur=-1,shuf=false,rep=0,edit=false,url=null,drag=false;
+let db,all=[],lists=[],cov={},lv=null,pl=null,pid=null,cid=null,shuf=false,rep=0,edit=false,url=null,drag=false;
 const esc=s=>s.replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
-const open=()=>new Promise((ok,no)=>{const r=indexedDB.open('tracks',1);
- r.onupgradeneeded=()=>{r.result.createObjectStore('meta',{keyPath:'id'});r.result.createObjectStore('blob')};
+const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
+const inList=l=>all.filter(t=>(t.list||'')===l).sort((a,b)=>a.order-b.order);
+const open=()=>new Promise((ok,no)=>{const r=indexedDB.open('tracks',2);
+ r.onupgradeneeded=()=>{const d=r.result;for(const [n,o] of [['meta',{keyPath:'id'}],['lists',{keyPath:'id'}],['blob']])if(!d.objectStoreNames.contains(n))d.createObjectStore(n,o)};
  r.onsuccess=()=>ok(r.result);r.onerror=()=>no(r.error)});
 const run=(st,mode,fn)=>new Promise((ok,no)=>{const t=db.transaction(st,mode);let r;
  try{r=fn(...st.map(s=>t.objectStore(s)))}catch(x){no(x);return}
  t.oncomplete=()=>ok(r&&r.result);t.onerror=t.onabort=()=>no(t.error)});
 
 async function load(){
- const id=tracks[cur]&&tracks[cur].id;
- tracks=(await run(['meta'],'readonly',m=>m.getAll())).sort((a,b)=>a.order-b.order);
- cur=tracks.findIndex(t=>t.id===id);
+ all=await run(['meta'],'readonly',m=>m.getAll());
+ lists=(await run(['lists'],'readonly',l=>l.getAll())).sort((a,b)=>a.order-b.order);
+ for(const l of lists)if(!cov[l.id]){const b=await run(['blob'],'readonly',s=>s.get('c:'+l.id));if(b)cov[l.id]=URL.createObjectURL(b)}
  render();
 }
 function render(){
- $('#list').innerHTML=tracks.map((t,i)=>`<li data-i="${i}" class="${i===cur?'on':''}"><span class="n">${i+1}</span><span class="t">${esc(t.name)}</span>${edit?'<button data-a="up">↑</button><button data-a="dn">↓</button><button data-a="del">Delete</button>':''}</li>`).join('')||'<li class="empty">Tap “Add” to import audio from Files.</li>';
+ const home=lv===null,L=home?null:lv===''?{name:'Unsorted'}:lists.find(x=>x.id===lv);
+ if(!home&&!L){lv=null;return render()}
+ $('#h').textContent=home?'Tracks':L.name;
+ $('#bk').hidden=home;$('#nw').hidden=!home;
  $('#ed').textContent=edit?'Done':'Edit';
+ $('#cv').innerHTML=!home&&cov[lv]?`<img src="${cov[lv]}">`:'';
+ if(home){
+  const rows=[...lists,...(inList('').length?[{id:'',name:'Unsorted'}]:[])];
+  $('#list').innerHTML=rows.map(l=>`<li data-l="${l.id}"><span class="cv">${cov[l.id]?`<img src="${cov[l.id]}">`:''}</span><span class="t">${esc(l.name)}<span class="a">${inList(l.id).length} tracks</span></span>${edit&&l.id?'<span class="b"><button data-a="cov">Cover</button><button data-a="ren">Rename</button><button data-a="del">Delete</button></span>':''}</li>`).join('')||'<li class="empty">Tap “New” to make a playlist.</li>';
+ }else{
+  $('#list').innerHTML=inList(lv).map((t,i)=>`<li data-i="${i}" class="${t.id===pid&&lv===pl?'on':''}"><span class="n">${i+1}</span><span class="t">${esc(t.name)}${t.author?`<span class="a">${esc(t.author)}</span>`:''}</span>${edit?'<span class="b"><button data-a="up">↑</button><button data-a="dn">↓</button><button data-a="ren">Rename</button><button data-a="mv">Move</button><button data-a="del">Delete</button></span>':''}</li>`).join('')||'<li class="empty">Tap “Add” to import audio from Files.</li>';
+ }
  $('#sh').className=shuf?'on':'';
  $('#rp').className=rep?'on':'';
  $('#rp').textContent=['Repeat','Repeat all','Repeat one'][rep];
- $('#now').textContent=tracks[cur]?tracks[cur].name:'Nothing playing';
+ const c=all.find(x=>x.id===pid);
+ $('#now').textContent=c?(c.author?c.author+' – ':'')+c.name:'Nothing playing';
+}
+async function newList(){
+ const n=prompt('Playlist name');if(!n||!n.trim())return;
+ await run(['lists'],'readwrite',l=>{l.put({id:uid(),name:n.trim(),order:Date.now()})});
+ await load();
+}
+async function renameList(id){
+ const l=lists.find(x=>x.id===id);
+ const n=prompt('Playlist name',l.name);if(!n||!n.trim())return;
+ await run(['lists'],'readwrite',s=>{s.put({...l,name:n.trim()})});
+ await load();
+}
+async function delList(id){
+ const l=lists.find(x=>x.id===id);
+ if(!confirm(`Delete “${l.name}”? Its tracks move to Unsorted.`))return;
+ const ts=inList(id);
+ await run(['meta','lists','blob'],'readwrite',(m,s,b)=>{ts.forEach(t=>m.put({...t,list:''}));s.delete(id);b.delete('c:'+id)});
+ if(cov[id]){URL.revokeObjectURL(cov[id]);delete cov[id]}
+ await load();
+}
+async function setCover(id,file){
+ if(!file)return;
+ const bm=await createImageBitmap(file),k=Math.min(1,512/Math.max(bm.width,bm.height));
+ const c=document.createElement('canvas');c.width=Math.round(bm.width*k);c.height=Math.round(bm.height*k);
+ c.getContext('2d').drawImage(bm,0,0,c.width,c.height);
+ const b=await new Promise(r=>c.toBlob(r,'image/jpeg',.85));
+ await run(['blob'],'readwrite',s=>{s.put(b,'c:'+id)});
+ if(cov[id])URL.revokeObjectURL(cov[id]);delete cov[id];
+ await load();
 }
 async function add(files){
- let o=tracks.reduce((m,t)=>Math.max(m,t.order),0);
+ let o=all.reduce((m,t)=>Math.max(m,t.order),0);
  for(const f of files){
-  const id=Date.now().toString(36)+Math.random().toString(36).slice(2);
-  await run(['meta','blob'],'readwrite',(m,b)=>{m.put({id,name:f.name.replace(/\.[^.]+$/,''),order:++o});b.put(f,id)});
+  const id=uid();
+  await run(['meta','blob'],'readwrite',(m,b)=>{m.put({id,name:f.name.replace(/\.[^.]+$/,''),list:lv||'',order:++o});b.put(f,id)});
  }
  await load();
 }
-async function del(i){
- const t=tracks[i];
+async function delTrack(t){
  if(!confirm(`Delete “${t.name}”?`))return;
  await run(['meta','blob'],'readwrite',(m,b)=>{m.delete(t.id);b.delete(t.id)});
- if(i===cur){au.pause();au.removeAttribute('src');au.load();if(url)URL.revokeObjectURL(url);url=null}
+ if(t.id===pid){au.pause();au.removeAttribute('src');au.load();if(url)URL.revokeObjectURL(url);url=null;pid=null}
  await load();
 }
-async function move(i,d){
- const j=i+d;if(j<0||j>=tracks.length)return;
- const a=tracks[i],b=tracks[j];
- await run(['meta'],'readwrite',m=>{m.put({...a,order:b.order});m.put({...b,order:a.order})});
+async function renameTrack(t){
+ const name=prompt('Title',t.name);if(name===null)return;
+ const author=prompt('Author',t.author||'');if(author===null)return;
+ await run(['meta'],'readwrite',m=>{m.put({...t,name:name.trim()||t.name,author:author.trim()})});
+ await load();
+ if(url&&t.id===pid)setMeta(all.find(x=>x.id===pid));
+}
+async function moveTrack(t){
+ const o=[{id:'',name:'Unsorted'},...lists];
+ const l=o[+prompt('Move to:\n'+o.map((x,i)=>`${i+1}. ${x.name}`).join('\n'))-1];if(!l)return;
+ await run(['meta'],'readwrite',m=>{m.put({...t,list:l.id,order:Date.now()})});
  await load();
 }
-async function play(i){
- const t=tracks[i];if(!t)return;
+async function reorder(t,d){
+ const a=inList(lv),i=a.findIndex(x=>x.id===t.id),u=a[i+d];if(!u)return;
+ await run(['meta'],'readwrite',m=>{m.put({...t,order:u.order});m.put({...u,order:t.order})});
+ await load();
+}
+function setMeta(t){
+ if(!('mediaSession' in navigator))return;
+ navigator.mediaSession.metadata=new MediaMetadata({title:t.name,artist:t.author||'',artwork:cov[pl]?[{src:cov[pl],sizes:'512x512',type:'image/jpeg'}]:[]});
+}
+async function play(t,l){
+ if(!t)return;
  if(!au.getAttribute('src')){au.src=SILENT;au.play().catch(()=>{})} // unlocks audio inside the tap
- cur=i;render();
+ pl=l;pid=t.id;render();
  const b=await run(['blob'],'readonly',s=>s.get(t.id));
  if(url)URL.revokeObjectURL(url);
  au.src=url=URL.createObjectURL(b);
  try{await au.play()}catch(x){}
- if('mediaSession' in navigator)navigator.mediaSession.metadata=new MediaMetadata({title:t.name,artist:'Tracks'});
+ setMeta(t);
 }
+const q=()=>inList(pl),ci=()=>q().findIndex(t=>t.id===pid);
 function pick(d){
- const n=tracks.length;if(!n)return -1;
- if(shuf&&n>1){let j;do j=Math.floor(Math.random()*n);while(j===cur);return j}
- const k=cur+d;
- return k>=0&&k<n?k:rep===1?(k<0?n-1:0):-1;
+ const a=q(),n=a.length,c=ci();if(!n)return null;
+ if(shuf&&n>1){let j;do j=Math.floor(Math.random()*n);while(j===c);return a[j]}
+ const k=c+d;
+ return a[k>=0&&k<n?k:rep===1?(k<0?n-1:0):-1]||null;
 }
-const next=()=>{const k=pick(1);if(k>=0)play(k)};
-const prev=()=>{if(au.currentTime>3)au.currentTime=0;else{const k=pick(-1);if(k>=0)play(k)}};
+const next=()=>{const t=pick(1);if(t)play(t,pl)};
+const prev=()=>{if(au.currentTime>3)au.currentTime=0;else{const t=pick(-1);if(t)play(t,pl)}};
 
-au.onended=()=>{if(!url)return;rep===2?play(cur):next()};
+au.onended=()=>{if(!url)return;rep===2?play(q()[ci()],pl):next()};
 au.onplay=au.onpause=()=>{$('#pp').textContent=au.paused?'Play':'Pause'};
 au.ontimeupdate=()=>{
  if(!url)return;
@@ -125,16 +192,28 @@ au.ontimeupdate=()=>{
 };
 $('#seek').oninput=()=>{drag=true};
 $('#seek').onchange=()=>{au.currentTime=$('#seek').value/1000*au.duration;drag=false};
-$('#pp').onclick=()=>url?(au.paused?au.play():au.pause()):play(Math.max(cur,0));
+$('#pp').onclick=()=>url?(au.paused?au.play():au.pause()):lv!==null&&play(inList(lv)[0],lv);
 $('#pv').onclick=prev;$('#nx').onclick=next;
 $('#sh').onclick=()=>{shuf=!shuf;render()};
 $('#rp').onclick=()=>{rep=(rep+1)%3;render()};
 $('#ed').onclick=()=>{edit=!edit;render()};
+$('#bk').onclick=()=>{lv=null;edit=false;render()};
+$('#nw').onclick=newList;
 $('#f').onchange=async e=>{await add([...e.target.files]);e.target.value=''};
+$('#cf').onchange=async e=>{await setCover(cid,e.target.files[0]);e.target.value=''};
 $('#list').onclick=e=>{
- const li=e.target.closest('li[data-i]');if(!li)return;
- const i=+li.dataset.i,a=e.target.dataset.a;
- a==='del'?del(i):a?move(i,a==='up'?-1:1):play(i);
+ const li=e.target.closest('li'),a=e.target.dataset.a;if(!li)return;
+ if(li.dataset.l!==undefined){
+  const id=li.dataset.l;
+  if(a==='cov'){cid=id;$('#cf').click()}
+  else if(a==='ren')renameList(id);
+  else if(a==='del')delList(id);
+  else{lv=id;edit=false;render()}
+  return;
+ }
+ if(li.dataset.i===undefined)return;
+ const t=inList(lv)[+li.dataset.i];
+ a==='del'?delTrack(t):a==='ren'?renameTrack(t):a==='mv'?moveTrack(t):a==='up'?reorder(t,-1):a==='dn'?reorder(t,1):play(t,lv);
 };
 if('mediaSession' in navigator)for(const [a,f] of [['play',()=>au.play()],['pause',()=>au.pause()],['previoustrack',prev],['nexttrack',next],['seekto',e=>{au.currentTime=e.seekTime}]])try{navigator.mediaSession.setActionHandler(a,f)}catch(x){}
 
