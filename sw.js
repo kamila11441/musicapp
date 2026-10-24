@@ -1,4 +1,4 @@
-const CACHE = 'tracks-v10';
+const CACHE = 'tracks-v2.1';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon.png'];
 
 self.addEventListener('install', event => {
