@@ -63,8 +63,12 @@ footer{margin:0 10px calc(8px + env(safe-area-inset-bottom));padding:12px 18px 8
 #welcome{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:space-between;padding:calc(24px + env(safe-area-inset-top)) 24px calc(22px + env(safe-area-inset-bottom));overflow:auto;background:radial-gradient(ellipse at 73% 31%,rgba(236,220,194,.52),transparent 35%),radial-gradient(ellipse at 16% 78%,rgba(151,178,164,.42),transparent 35%),linear-gradient(155deg,#839b94 0%,#bcc9bd 45%,#e5d7c4 100%);color:#f8f8f2}
 .welcome-mark{font-size:14px;letter-spacing:.23em;text-transform:uppercase;opacity:.88}
 .welcome-art{flex:1;min-height:150px;display:grid;place-items:center;position:relative}
-.welcome-disc{width:min(66vw,300px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 38% 32%,rgba(255,255,255,.72),rgba(238,231,214,.24) 38%,rgba(52,80,72,.24) 72%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 28px 65px rgba(40,57,48,.16);display:grid;place-items:center;animation:float 5s ease-in-out infinite}
-.welcome-disc img{width:42%;height:42%;object-fit:contain;filter:drop-shadow(0 8px 12px rgba(31,52,45,.2))}
+.welcome-disc{width:min(66vw,300px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 38% 32%,rgba(255,255,255,.72),rgba(238,231,214,.24) 38%,rgba(52,80,72,.24) 72%);box-shadow:inset 0 1px 0 rgba(255,255,255,.7),0 28px 65px rgba(40,57,48,.16);display:grid;place-items:center;overflow:hidden;animation:float 5s ease-in-out infinite}
+.welcome-disc svg{width:43%;height:43%;filter:drop-shadow(0 8px 12px rgba(31,52,45,.16))}
+.welcome-disc.has-art{width:min(72vw,340px);aspect-ratio:4/5;border-radius:26px;background:none;box-shadow:0 24px 60px rgba(25,42,37,.26)}
+.welcome-disc img{display:block;width:100%;height:100%;object-fit:cover}
+.welcome-art-actions{position:absolute;right:0;bottom:0;display:flex;gap:8px}
+.welcome-art-actions button{border:1px solid rgba(255,255,255,.58);border-radius:22px;background:rgba(38,55,48,.25);color:white;padding:8px 12px;font-size:13px;backdrop-filter:blur(12px)}
 .welcome-copy{padding-bottom:26px;text-shadow:0 1px 14px rgba(40,57,48,.1)}
 .welcome-kicker{font-size:13px;letter-spacing:.18em;text-transform:uppercase;opacity:.82}
 .welcome-copy h2{font-size:clamp(42px,12vw,64px);line-height:.98;letter-spacing:-2px;margin:12px 0 14px;font-weight:650}
@@ -89,6 +93,7 @@ footer{margin:0 10px calc(8px + env(safe-area-inset-bottom));padding:12px 18px 8
 body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visibility:hidden}
 @keyframes float{50%{transform:translateY(-9px)}}
 @media(max-height:700px){.welcome-art{min-height:120px}.welcome-disc{width:min(45vh,230px)}.welcome-copy h2{font-size:42px}}
+@media(max-height:700px){.welcome-disc.has-art{width:min(42vh,220px)}}
 @keyframes arrive{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
 </style>
@@ -96,11 +101,12 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
 <body>
 <section id="welcome" hidden aria-label="Welcome to Tracks">
  <div class="welcome-mark">Tracks · your music, your space</div>
- <div class="welcome-art"><div class="welcome-disc"><img src="icon.png" alt=""></div></div>
+ <div class="welcome-art"><div class="welcome-disc" id="welcomeDisc"><svg viewBox="0 0 120 120" fill="none"><path d="M26 60h8m6-17v34m16-49v64m18-46v28m16-44v60m16-39v18" stroke="#f8f8f2" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="60" r="51" stroke="rgba(248,248,242,.38)" stroke-width="1.5"/></svg></div><div class="welcome-art-actions"><button id="welcomeArtworkBtn" type="button">Add artwork</button><button id="welcomeArtworkRemove" type="button" hidden>Remove</button></div></div>
  <div class="welcome-copy"><div class="welcome-kicker">A little room to listen</div><h2>Make space<br>for sound.</h2><p>Your music stays yours. Add a few tracks and settle in.</p></div>
  <div class="welcome-actions"><button id="welcomeStart">Start listening</button><button id="welcomeImport">Add music</button></div>
 </section>
-<header><nav><button id="bk" hidden>‹ Tracks</button><i></i><button id="ed">Edit</button><button id="nw">New</button><label id="ad" role="button" tabindex="0" aria-label="Add audio tracks">Add<input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></nav><h1 id="h">Tracks</h1></header>
+<input id="welcomeArtworkFile" type="file" accept="image/*" hidden>
+<header><nav><button id="bk" hidden>‹ Tracks</button><i></i><button id="changeArt" aria-label="Change welcome artwork">Art</button><button id="ed">Edit</button><button id="nw">New</button><label id="ad" role="button" tabindex="0" aria-label="Add audio tracks">Add<input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></nav><h1 id="h">Tracks</h1></header>
 <div id="cv"></div>
 <ul id="list" aria-label="Your playlists"></ul>
 <input id="cf" type="file" accept="image/*" hidden>
@@ -121,7 +127,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
 <script>
 const $=s=>document.querySelector(s),au=$('#au');
 const SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-let db,all=[],lists=[],cov={},lv=null,pl=null,pid=null,cid=null,shuf=false,rep=0,edit=false,url=null,drag=false,playToken=0;
+let db,all=[],lists=[],cov={},lv=null,pl=null,pid=null,cid=null,shuf=false,rep=0,edit=false,url=null,drag=false,playToken=0,welcomeArtworkUrl=null;
 const esc=s=>s.replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
@@ -136,8 +142,26 @@ const run=(st,mode,fn)=>new Promise((ok,no)=>{const t=db.transaction(st,mode);le
 async function load(){
  all=await run(['meta'],'readonly',m=>m.getAll());
  lists=(await run(['lists'],'readonly',l=>l.getAll())).sort((a,b)=>a.order-b.order);
+ const welcomeBlob=await run(['blob'],'readonly',s=>s.get('welcome-art'));
+ if(welcomeBlob)applyWelcomeArtwork(URL.createObjectURL(welcomeBlob));
  for(const l of lists)if(!cov[l.id]){const b=await run(['blob'],'readonly',s=>s.get('c:'+l.id));if(b)cov[l.id]=URL.createObjectURL(b)}
  render();
+}
+function applyWelcomeArtwork(nextUrl){
+ if(welcomeArtworkUrl&&welcomeArtworkUrl!==nextUrl)URL.revokeObjectURL(welcomeArtworkUrl);
+ welcomeArtworkUrl=nextUrl||null;
+ const disc=$('#welcomeDisc');
+ disc.classList.toggle('has-art',!!welcomeArtworkUrl);
+ disc.querySelector('img')?.remove();
+ const svg=disc.querySelector('svg');if(svg)svg.hidden=!!welcomeArtworkUrl;
+ if(welcomeArtworkUrl){const img=new Image();img.alt='';img.src=welcomeArtworkUrl;disc.append(img)}
+ $('#welcomeArtworkBtn').textContent=welcomeArtworkUrl?'Change artwork':'Add artwork';
+ $('#welcomeArtworkRemove').hidden=!welcomeArtworkUrl;
+}
+async function saveWelcomeArtwork(file){
+ if(!file)return;
+ await run(['blob'],'readwrite',s=>s.put(file,'welcome-art'));
+ applyWelcomeArtwork(URL.createObjectURL(file));
 }
 function render(){
  const home=lv===null,L=home?null:lv===''?{name:'Unsorted'}:lists.find(x=>x.id===lv);
@@ -164,7 +188,7 @@ function renderPlayer(){
  const c=all.find(x=>x.id===pid);if(!c)return;
  const cover=cov[c.list]||'';
  $('#playerTitle').textContent=c.name;$('#playerArtist').textContent=c.author||'Tracks';
- $('#playerArt').src=cover||'icon.png';
+ if(cover)$('#playerArt').src=cover;else $('#playerArt').removeAttribute('src');
  $('#playerScreen').style.setProperty('--player-cover',cover?`linear-gradient(180deg,rgba(22,39,35,.28),rgba(22,39,35,.67)),url("${cover}")`:'' );
  $('#playerToggle').innerHTML=au.paused?I.play:I.pause;
  $('#playerToggle').setAttribute('aria-label',au.paused?'Play':'Pause');
@@ -307,6 +331,10 @@ document.addEventListener('keydown',e=>{
 const leaveWelcome=()=>{ $('#welcome').hidden=true;try{localStorage.setItem('tracks-welcome-seen','1')}catch(x){} };
 $('#welcomeStart').onclick=leaveWelcome;
 $('#welcomeImport').onclick=()=>$('#f').click();
+$('#welcomeArtworkBtn').onclick=()=>$('#welcomeArtworkFile').click();
+$('#changeArt').onclick=()=>$('#welcomeArtworkFile').click();
+$('#welcomeArtworkFile').onchange=async e=>{await saveWelcomeArtwork(e.target.files[0]);e.target.value=''};
+$('#welcomeArtworkRemove').onclick=async()=>{await run(['blob'],'readwrite',s=>s.delete('welcome-art'));applyWelcomeArtwork(null)};
 $('#ad').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('#f').click()}};
 $('#f').onchange=async e=>{if(e.target.files.length){leaveWelcome();await add([...e.target.files])}e.target.value=''};
 $('#cf').onchange=async e=>{await setCover(cid,e.target.files[0]);e.target.value=''};
