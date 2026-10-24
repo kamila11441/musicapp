@@ -113,7 +113,7 @@ footer{margin:0 10px calc(8px + env(safe-area-inset-bottom));padding:12px 18px 8
 #settingsSheet{position:fixed;inset:0;z-index:7;display:flex;align-items:flex-end;justify-content:center;padding:18px 12px calc(14px + env(safe-area-inset-bottom));background:rgba(12,24,19,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
 #settingsSheet[hidden]{display:none!important}
 #lyricsEditor{position:fixed;inset:0;z-index:8;display:flex;align-items:flex-end;justify-content:center;padding:18px 12px calc(14px + env(safe-area-inset-bottom));background:rgba(12,24,19,.4);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}#lyricsEditor[hidden]{display:none!important}.lyrics-edit-card{animation:sheetEnter .32s var(--ease) both}.lyrics-edit-card textarea{width:100%;min-height:38vh;resize:vertical;border:1px solid var(--line);border-radius:16px;padding:14px;background:var(--bg);color:var(--fg);font:inherit;line-height:1.6;user-select:text;-webkit-user-select:text}.lyrics-edit-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:14px}.lyrics-edit-actions button{border-radius:22px;padding:10px 18px;background:var(--line)}.lyrics-edit-actions button.primary{background:var(--acc);color:var(--on)}
-#shareSheet{position:fixed;inset:0;z-index:9;display:flex;align-items:flex-end;justify-content:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom));background:rgba(12,18,18,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}#shareSheet[hidden]{display:none!important}.share-card{width:min(100%,520px);max-height:96dvh;overflow:auto;border-radius:28px;padding:18px;background:var(--card);color:var(--fg);box-shadow:0 24px 80px #0005;animation:sheetEnter .28s var(--ease) both}.share-preview{display:block;width:auto;height:min(58dvh,520px);max-width:100%;aspect-ratio:9/16;object-fit:cover;margin:0 auto;border-radius:18px;background:var(--player-gradient)}.share-actions{display:flex;gap:9px;margin-top:14px}.share-actions button{flex:1;border-radius:22px;padding:12px 14px;background:var(--line)}.share-actions .primary{background:var(--acc);color:var(--on)}.share-caption{margin:10px 2px 0;color:var(--mut);font-size:12px;text-align:center}
+#shareSheet{position:fixed;inset:0;z-index:9;display:flex;align-items:center;justify-content:center;padding:12px 12px calc(12px + env(safe-area-inset-bottom));background:rgba(12,18,18,.58);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}#shareSheet[hidden]{display:none!important}.share-card{width:min(100%,820px);max-height:96dvh;overflow:auto;border-radius:28px;padding:18px;background:var(--card);color:var(--fg);box-shadow:0 24px 80px #0005;animation:sheetEnter .28s var(--ease) both}.share-art-stage{position:relative;width:min(100%,780px);aspect-ratio:16/9;margin:0 auto;border-radius:16px;overflow:hidden;background:var(--player-gradient)}.share-preview{display:block;width:100%;height:100%;object-fit:cover}.share-tile-move{position:absolute;left:var(--tile-left,31.25%);top:var(--tile-top,13%);width:37.5%;height:66.667%;aspect-ratio:1;padding:0;border:1px solid transparent;border-radius:8%;background:transparent;cursor:grab;touch-action:none;transition:border-color .18s ease,background .18s ease}.share-tile-move:active,.share-tile-move.moving,.share-tile-move:focus-visible{border-color:rgba(255,255,255,.8);background:rgba(255,255,255,.06);cursor:grabbing}.share-background{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:12px}.share-background-label{font-size:13px;font-weight:600}.share-background-options{display:flex;align-items:center;gap:6px}.share-background-options button{border:1px solid var(--line);border-radius:18px;padding:7px 11px;font-size:12px}.share-background-options button[aria-pressed="true"]{background:var(--acc);border-color:var(--acc);color:var(--on)}.share-background-options input{width:32px;height:32px;padding:0;border:1px solid var(--line);border-radius:50%;background:transparent;overflow:hidden;cursor:pointer}.share-background-options input::-webkit-color-swatch-wrapper{padding:0}.share-background-options input::-webkit-color-swatch{border:0;border-radius:50%}.share-actions{display:flex;gap:9px;margin-top:14px}.share-actions button{flex:1;border-radius:22px;padding:12px 14px;background:var(--line)}.share-actions button:disabled{opacity:.45;cursor:wait}.share-actions .primary{background:var(--acc);color:var(--on)}.share-caption{margin:10px 2px 0;color:var(--mut);font-size:12px;text-align:center}
 .settings-card{width:min(100%,520px);max-height:min(86vh,760px);overflow:auto;border-radius:28px;padding:22px;background:var(--card);color:var(--fg);box-shadow:0 24px 80px rgba(9,25,18,.28);animation:sheetEnter .32s var(--ease) both}
 .settings-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
 .settings-head h2{margin:0;font-size:26px;letter-spacing:-.6px}
@@ -135,6 +135,7 @@ footer{margin:0 10px calc(8px + env(safe-area-inset-bottom));padding:12px 18px 8
 .art-actions{display:flex;gap:8px;flex:none}
 .art-actions button{border-radius:22px;padding:9px 13px;background:var(--acc);color:var(--on);font-size:14px}
 .art-actions button.secondary{background:var(--line);color:var(--fg)}
+.backup-actions{display:grid;grid-template-columns:1fr 1fr;gap:9px}.backup-actions button{min-width:0;border:1px solid var(--line);border-radius:18px;padding:11px 9px;background:rgba(255,255,255,.32);font-size:14px}.backup-actions button.primary{background:var(--acc);border-color:transparent;color:var(--on)}#backupSave{grid-column:1/-1}.backup-status{min-height:1.4em;margin:9px 2px 0;color:var(--mut);font-size:12px}
 .welcome-copy{padding-bottom:26px;text-shadow:none}
 .welcome-kicker{font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:#765d78}
 .welcome-copy h2{font-size:clamp(42px,12vw,64px);line-height:.98;letter-spacing:-2px;margin:12px 0 14px;font-weight:650}
@@ -196,7 +197,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
 <footer aria-label="Audio player">
 <div class="np"><span class="cv" id="art" role="button" tabindex="0" aria-label="Open now playing"></span><div id="now" role="button" tabindex="0" aria-label="Open now playing" aria-live="polite">Nothing playing</div></div>
 <input id="seek" type="range" min="0" max="1000" value="0">
- <div id="tm">0:00 / 0:00<span style="float:right">v32</span></div>
+ <div id="tm">0:00 / 0:00<span style="float:right">v2.4</span></div>
 <div class="ctl"><button id="sh" aria-label="Shuffle"></button><button id="pv" aria-label="Previous"></button><button id="pp" aria-label="Play or pause"></button><button id="nx" aria-label="Next"></button><button id="rp" aria-label="Repeat"></button></div>
 </footer>
 <section id="playerScreen" hidden role="dialog" aria-modal="true" aria-labelledby="playerTitle">
@@ -208,7 +209,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
  <div class="player-transport"><button id="playerPrev" aria-label="Previous track"></button><button id="playerToggle" aria-label="Play or pause"></button><button id="playerNext" aria-label="Next track"></button></div></div>
 </section>
 <section id="shareSheet" hidden>
- <div class="share-card" role="dialog" aria-modal="true" aria-labelledby="shareTitle"><div class="settings-head"><h2 id="shareTitle">Story preview</h2><button id="shareClose" type="button" aria-label="Close story preview">×</button></div><img id="sharePreview" class="share-preview" alt="Preview of a 9 by 16 song story"><p class="share-caption">Save or share this image to post it to Instagram Stories.</p><div class="share-actions"><button id="shareSave" type="button">Save image</button><button id="shareSend" class="primary" type="button">Share</button></div></div>
+ <div class="share-card" role="dialog" aria-modal="true" aria-labelledby="shareTitle"><div class="settings-head"><h2 id="shareTitle">Share track</h2><button id="shareClose" type="button" aria-label="Close share preview">×</button></div><div class="share-art-stage" id="shareStage"><img id="sharePreview" class="share-preview" alt="16 by 9 song share image with movable square cover"><button id="shareTileMove" class="share-tile-move" type="button" aria-label="Move song tile; use arrow keys or drag"></button></div><div class="share-background"><span class="share-background-label">Background</span><div class="share-background-options"><button id="shareBgBlur" type="button" aria-pressed="true">Blurred</button><button id="shareBgColorMode" type="button" aria-pressed="false">Custom color</button><input id="shareBgColor" type="color" value="#49414a" aria-label="Choose share background color"></div></div><p id="shareCaption" class="share-caption">Drag the square to move it. Save or share when ready.</p><div class="share-actions"><button id="shareSave" type="button">Save image</button><button id="shareSend" class="primary" type="button">Share</button></div></div>
 </section>
 <section id="settingsSheet" hidden>
  <div class="settings-card" role="dialog" aria-modal="true" aria-labelledby="settingsTitle">
@@ -224,7 +225,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
   <div class="settings-section" id="accentSettings"><h3 id="accentTitle">Accent colors</h3><div class="accent-options" id="accentOptions" role="radiogroup" aria-labelledby="accentTitle"><button class="accent-option" type="button" role="radio" aria-checked="true" data-accent-choice="welcome"><span class="accent-dots"><i></i><i></i></span><span>Orange + plum</span></button><button class="accent-option" type="button" role="radio" aria-checked="false" data-accent-choice="theme"><span class="accent-dots theme"><i></i><i></i></span><span>Theme accents</span></button><div class="accent-custom-tile"><button class="accent-option" type="button" role="radio" aria-checked="false" data-accent-choice="custom"><span class="accent-dots custom"><i></i></span><span>Custom accent</span></button><input id="customAccentColor" type="color" value="#a94f28" aria-label="Choose custom accent color"></div></div></div>
   <div class="settings-section"><h3 id="lyricsTrackingTitle">Lyrics</h3><div class="art-setting"><p>Follow timestamped lines as the song plays.</p><button id="lyricsTrackingToggle" class="tracking-switch" type="button" role="switch" aria-checked="true" aria-label="Track lyrics during playback"><span></span></button></div><div class="lyric-highlight-setting"><label for="lyricHighlightColor">Active line color</label><input id="lyricHighlightColor" type="color" value="#fffaf0" aria-label="Choose active lyric text color"></div></div>
   <div class="settings-section"><h3>Welcome artwork</h3><div class="art-setting"><p>Choose an image for your welcome screen.</p><div class="art-actions"><button id="artworkChangeBtn" type="button">Change</button><button id="artworkRemoveBtn" class="secondary" type="button" hidden>Remove</button></div></div></div>
-  <div class="settings-section"><h3>Music backup</h3><p class="backup-status" style="margin:0 2px 12px">Save your music, playlists, artwork, lyrics, and settings to a file.</p><div class="backup-actions"><button id="backupExport" class="primary" type="button">Export backup</button><button id="backupImport" type="button">Import backup</button></div><p id="backupStatus" class="backup-status" role="status" aria-live="polite"></p><input id="backupFile" type="file" accept=".json,application/json" hidden></div>
+  <div class="settings-section"><h3>Music backup</h3><p class="backup-status" style="margin:0 2px 12px">Save your music, playlists, artwork, lyrics, and settings to a file.</p><div class="backup-actions"><button id="backupExport" class="primary" type="button">Prepare backup</button><button id="backupImport" type="button">Import backup</button><button id="backupSave" type="button" hidden>Save backup file</button></div><p id="backupStatus" class="backup-status" role="status" aria-live="polite"></p><input id="backupFile" type="file" accept=".json,application/json" hidden></div>
  </div>
 </section>
 <section id="lyricsEditor" hidden>
@@ -234,7 +235,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
 <script>
 const $=s=>document.querySelector(s),au=$('#au');
 const SILENT='data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=';
-let db,all=[],lists=[],cov={},trackCov={},lv=null,pl=null,pid=null,cid=null,lyricsEditId=null,shuf=false,rep=0,edit=false,url=null,drag=false,playToken=0,welcomeArtworkUrl=null,settingsReturnFocus=null,accentChoice='welcome',customAccent='#a94f28',lyricsTracking=true,lyricsHighlight='#fffaf0',storyBlob=null,storyImageUrl=null;
+let db,all=[],lists=[],cov={},trackCov={},lv=null,pl=null,pid=null,cid=null,lyricsEditId=null,shuf=false,rep=0,edit=false,url=null,drag=false,playToken=0,welcomeArtworkUrl=null,settingsReturnFocus=null,accentChoice='welcome',customAccent='#a94f28',lyricsTracking=true,lyricsHighlight='#fffaf0',storyBlob=null,storyImageUrl=null,preparedBackupFile=null,storyBgMode='blurred',storyBgColor='#49414a',storyPosition={x:600,y:140},storyTrack=null,storyDrag=null,storyJob=0;
 const esc=s=>s.replace(/[&<>"]/g,c=>'&#'+c.charCodeAt(0)+';');
 const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
@@ -295,6 +296,35 @@ function closeSettings(){
  $('#settingsSheet').hidden=true;
  if(settingsReturnFocus?.isConnected)settingsReturnFocus.focus();
  settingsReturnFocus=null;
+}
+const BACKUP_SETTINGS=['Stash-theme','Stash-accent','Stash-custom-accent','Stash-lyrics-tracking','Stash-lyric-highlight','Stash-share-bg-mode','Stash-share-bg-color','Stash-share-position'];
+function readBackupStore(name){return new Promise((resolve,reject)=>{const tx=db.transaction([name],'readonly'),store=tx.objectStore(name),keys=store.getAllKeys(),values=store.getAll();tx.oncomplete=()=>resolve(keys.result.map((key,i)=>[key,values.result[i]]));tx.onerror=tx.onabort=()=>reject(tx.error||new Error('Could not read app data'))})}
+function toBase64(buffer){const bytes=new Uint8Array(buffer);let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));return btoa(binary)}
+function fromBase64(value){const binary=atob(value),bytes=new Uint8Array(binary.length);for(let i=0;i<binary.length;i++)bytes[i]=binary.charCodeAt(i);return bytes}
+async function exportBackup(){
+ const status=$('#backupStatus');status.textContent='Preparing your backup…';
+ try{
+  const [meta,lists,blobEntries]=await Promise.all([readBackupStore('meta'),readBackupStore('lists'),readBackupStore('blob')]);
+  const blobs=[];for(const [key,value] of blobEntries){if(!(value instanceof Blob))continue;blobs.push({key,type:value.type||'application/octet-stream',name:value instanceof File?value.name:null,lastModified:value instanceof File?value.lastModified:null,data:toBase64(await value.arrayBuffer())})}
+  const backup={format:'Stash-library-backup',version:1,createdAt:new Date().toISOString(),stores:{meta:meta.map(([,v])=>v),lists:lists.map(([,v])=>v),blob:blobs},settings:BACKUP_SETTINGS.map(key=>[key,localStorage.getItem(key)]).filter(([,value])=>value!==null)};
+  const filename=`Stash-backup-${new Date().toISOString().slice(0,10)}.json`;preparedBackupFile=new File([JSON.stringify(backup)],filename,{type:'application/json'});$('#backupSave').hidden=false;status.textContent=`Backup ready · ${meta.length} songs, ${lists.length} playlists. Tap Save backup file to store it.`;
+ }catch(error){status.textContent=`Backup failed: ${error.message||'Unable to read library'}`}
+}
+async function savePreparedBackup(){
+ const file=preparedBackupFile,status=$('#backupStatus');if(!file){status.textContent='Prepare a backup first.';return}
+ try{if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Stash music backup'});status.textContent='Backup shared or saved.';return}const href=URL.createObjectURL(file),a=document.createElement('a');a.href=href;a.download=file.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),60000);status.textContent='Backup file saved.'}catch(error){status.textContent=error.name==='AbortError'?'Save cancelled.':`Could not save backup: ${error.message||'Please try again.'}`}
+}
+async function importBackup(file){
+ const status=$('#backupStatus');if(!file)return;status.textContent='Reading backup…';
+ try{
+  const backup=JSON.parse(await file.text());
+  if(backup.format!=='Stash-library-backup'||backup.version!==1||!Array.isArray(backup.stores?.meta)||!Array.isArray(backup.stores?.lists)||!Array.isArray(backup.stores?.blob)||!Array.isArray(backup.settings))throw new Error('This file is not a supported Stash backup.');
+  const decoded=[];for(const entry of backup.stores.blob){if(typeof entry.key!=='string'||typeof entry.data!=='string')throw new Error('The backup contains invalid artwork or audio data.');const blob=new Blob([fromBase64(entry.data)],{type:entry.type||'application/octet-stream'});const value=entry.name?new File([blob],entry.name,{type:blob.type,lastModified:Number(entry.lastModified)||Date.now()}):blob;decoded.push([entry.key,value])}
+  if(!confirm(`Restore ${backup.stores.meta.length} songs and ${backup.stores.lists.length} playlists? This replaces the music and settings currently in this app.`)){status.textContent='Import cancelled.';return}
+  await new Promise((resolve,reject)=>{const tx=db.transaction(['meta','lists','blob'],'readwrite');for(const name of ['meta','lists','blob'])tx.objectStore(name).clear();for(const value of backup.stores.meta)tx.objectStore('meta').put(value);for(const value of backup.stores.lists)tx.objectStore('lists').put(value);for(const [key,value] of decoded)tx.objectStore('blob').put(value,key);tx.oncomplete=resolve;tx.onerror=tx.onabort=()=>reject(tx.error||new Error('Could not restore backup'))});
+  for(const key of BACKUP_SETTINGS)localStorage.removeItem(key);for(const [key,value] of backup.settings){if(BACKUP_SETTINGS.includes(key)&&typeof value==='string')localStorage.setItem(key,value)}
+  status.textContent='Backup restored. Reloading your library…';setTimeout(()=>location.reload(),350);
+ }catch(error){status.textContent=`Import failed: ${error.message||'Unable to restore backup'}`}
 }
 function render(){
  const home=lv===null,L=home?null:lv===''?{name:'Unsorted'}:lists.find(x=>x.id===lv);
@@ -357,39 +387,55 @@ const closePlayer=()=>{document.body.classList.remove('playing');$('#playerScree
 function fitCover(ctx,img,x,y,w,h){const scale=Math.max(w/img.width,h/img.height),sw=w/scale,sh=h/scale;ctx.drawImage(img,(img.width-sw)/2,(img.height-sh)/2,sw,sh,x,y,w,h)}
 function roundedPath(ctx,x,y,w,h,r){ctx.beginPath();ctx.moveTo(x+r,y);ctx.arcTo(x+w,y,x+w,y+h,r);ctx.arcTo(x+w,y+h,x,y+h,r);ctx.arcTo(x,y+h,x,y,r);ctx.arcTo(x,y,x+w,y,r);ctx.closePath()}
 async function makeStoryBlob(track){
- const canvas=document.createElement('canvas');canvas.width=1080;canvas.height=1920;const ctx=canvas.getContext('2d');
+ const canvas=document.createElement('canvas');canvas.width=1920;canvas.height=1080;const ctx=canvas.getContext('2d');
  const accent=getComputedStyle(document.body).getPropertyValue('--acc').trim()||'#a94f28';
- const bg=ctx.createLinearGradient(0,0,1080,1920);bg.addColorStop(0,accent);bg.addColorStop(.46,'#343438');bg.addColorStop(1,'#171719');ctx.fillStyle=bg;ctx.fillRect(0,0,1080,1920);
  const src=trackCov[track.id]||cov[track.list];let art=null;
  if(src)art=await new Promise(resolve=>{const image=new Image();image.onload=()=>resolve(image);image.onerror=()=>resolve(null);image.src=src});
- if(art){ctx.save();ctx.filter='blur(70px) brightness(.58)';fitCover(ctx,art,-40,-40,1160,2000);ctx.restore()}
- const shade=ctx.createLinearGradient(0,0,0,1920);shade.addColorStop(0,'rgba(12,13,15,.28)');shade.addColorStop(.5,'rgba(12,13,15,.12)');shade.addColorStop(1,'rgba(12,13,15,.82)');ctx.fillStyle=shade;ctx.fillRect(0,0,1080,1920);
- ctx.fillStyle='rgba(255,255,255,.94)';ctx.font='600 34px -apple-system,BlinkMacSystemFont,sans-serif';ctx.textAlign='left';ctx.fillText('Stash',92,142);
- ctx.fillStyle='rgba(255,255,255,.76)';for(let i=0;i<7;i++){const heights=[22,44,62,34,54,29,18];roundedPath(ctx,830+i*24,104-heights[i]/2,10,heights[i],5);ctx.fill()}
- const x=112,y=275,size=856;roundedPath(ctx,x,y,size,size,54);ctx.save();ctx.clip();
- if(art)fitCover(ctx,art,x,y,size,size);else{const artGrad=ctx.createLinearGradient(x,y,x+size,y+size);artGrad.addColorStop(0,accent);artGrad.addColorStop(1,'#242428');ctx.fillStyle=artGrad;ctx.fillRect(x,y,size,size);ctx.strokeStyle='rgba(255,255,255,.55)';ctx.lineWidth=14;ctx.lineCap='round';[0,1,2,3,4].forEach((n)=>{const bx=350+n*92,bh=[90,190,125,230,100][n];ctx.beginPath();ctx.moveTo(bx,703-bh/2);ctx.lineTo(bx,703+bh/2);ctx.stroke()})}
- ctx.restore();ctx.strokeStyle='rgba(255,255,255,.22)';ctx.lineWidth=2;roundedPath(ctx,x,y,size,size,54);ctx.stroke();
- ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='650 70px -apple-system,BlinkMacSystemFont,sans-serif';
- const wrap=(value,maxWidth,maxLines)=>{const words=value.split(/\s+/),lines=[];let line='';for(const word of words){const next=line?line+' '+word:word;if(ctx.measureText(next).width>maxWidth&&line){lines.push(line);line=word;if(lines.length===maxLines-1)break}else line=next}if(line)lines.push(line);if(lines.length===maxLines&&words.join(' ').length>lines.join(' ').length){let last=lines.at(-1);while(last&&ctx.measureText(last+'…').width>maxWidth)last=last.slice(0,-1);lines[lines.length-1]=last.trimEnd()+'…'}return lines};
- const titleLines=wrap(track.name,900,2);titleLines.forEach((line,i)=>ctx.fillText(line,92,1270+i*86));
- ctx.globalAlpha=.82;ctx.font='400 42px -apple-system,BlinkMacSystemFont,sans-serif';ctx.fillText(track.author||'Stash',92,1270+titleLines.length*86+5);ctx.globalAlpha=1;
- ctx.fillStyle=accent;ctx.beginPath();ctx.roundRect(92,1510,120,10,5);ctx.fill();ctx.fillStyle='rgba(255,255,255,.72)';ctx.font='500 24px -apple-system,BlinkMacSystemFont,sans-serif';ctx.fillText('A SONG FOR THIS MOMENT',92,1580);
- ctx.globalAlpha=.8;ctx.font='400 25px -apple-system,BlinkMacSystemFont,sans-serif';ctx.fillText('Made with Stash',92,1810);ctx.globalAlpha=1;
+ if(storyBgMode==='custom'){ctx.fillStyle=storyBgColor;ctx.fillRect(0,0,1920,1080)}else{const bg=ctx.createLinearGradient(0,0,1920,1080);bg.addColorStop(0,accent);bg.addColorStop(.55,'#343438');bg.addColorStop(1,'#171719');ctx.fillStyle=bg;ctx.fillRect(0,0,1920,1080);if(art){ctx.save();ctx.filter='blur(54px) brightness(.5)';fitCover(ctx,art,-35,-35,1990,1150);ctx.restore()}}
+ ctx.fillStyle='rgba(16,17,20,.2)';ctx.fillRect(0,0,1920,1080);
+ const size=720,r=60,x=Math.max(40,Math.min(1920-size-40,storyPosition.x)),y=Math.max(30,Math.min(1080-size-80,storyPosition.y));storyPosition={x,y};ctx.save();ctx.shadowColor='rgba(0,0,0,.38)';ctx.shadowBlur=38;ctx.shadowOffsetY=20;ctx.fillStyle='#151619';roundedPath(ctx,x,y,size,size,r);ctx.fill();ctx.restore();
+ ctx.save();roundedPath(ctx,x,y,size,size,r);ctx.clip();
+ if(art)fitCover(ctx,art,x,y,size,size);else{const fallback=ctx.createLinearGradient(x,y,x+size,y+size);fallback.addColorStop(0,accent);fallback.addColorStop(1,'#222328');ctx.fillStyle=fallback;ctx.fillRect(x,y,size,size);ctx.strokeStyle='rgba(255,255,255,.72)';ctx.lineWidth=16;ctx.lineCap='round';[0,1,2,3,4].forEach((n)=>{const bx=x+size*.3+n*size*.1,bh=[95,190,130,235,105][n];ctx.beginPath();ctx.moveTo(bx,y+size/2-bh/2);ctx.lineTo(bx,y+size/2+bh/2);ctx.stroke()})}
+ const shade=ctx.createLinearGradient(0,y,0,y+size);shade.addColorStop(0,'rgba(9,12,15,.78)');shade.addColorStop(.28,'rgba(9,12,15,.08)');shade.addColorStop(.58,'rgba(9,12,15,.03)');shade.addColorStop(1,'rgba(9,12,15,.8)');ctx.fillStyle=shade;ctx.fillRect(x,y,size,size);
+ // Track identity pill
+ roundedPath(ctx,x+24,y+24,size-48,86,43);ctx.fillStyle='rgba(8,10,12,.52)';ctx.fill();
+ if(art){ctx.save();ctx.beginPath();ctx.arc(x+68,y+67,32,0,Math.PI*2);ctx.clip();ctx.drawImage(art,x+36,y+35,64,64);ctx.restore()}else{ctx.beginPath();ctx.arc(x+68,y+67,32,0,Math.PI*2);ctx.fillStyle=accent;ctx.fill()}
+ ctx.fillStyle='#fff';ctx.textAlign='left';ctx.font='700 29px -apple-system,BlinkMacSystemFont,sans-serif';const title=track.name||'Untitled',titleWidth=size-190;let shortTitle=title;while(shortTitle.length>3&&ctx.measureText(shortTitle).width>titleWidth)shortTitle=shortTitle.slice(0,-2);if(shortTitle!==title)shortTitle=shortTitle.trimEnd()+'…';ctx.fillText(shortTitle,x+118,y+61);
+ ctx.fillStyle='rgba(255,255,255,.82)';ctx.font='500 22px -apple-system,BlinkMacSystemFont,sans-serif';let artist=track.author||'Unknown artist';while(artist.length>3&&ctx.measureText(artist).width>titleWidth)artist=artist.slice(0,-2);if(artist!==(track.author||'Unknown artist'))artist=artist.trimEnd()+'…';ctx.fillText(artist,x+118,y+91);
+ const duration=pid===track.id&&Number.isFinite(au.duration)?au.duration:0,current=pid===track.id&&Number.isFinite(au.currentTime)?au.currentTime:0,progress=duration?Math.max(0,Math.min(1,current/duration)):.36,barX=x+40,barY=y+520,barW=size-80;
+ ctx.fillStyle='rgba(255,255,255,.95)';ctx.font='500 24px -apple-system,BlinkMacSystemFont,sans-serif';ctx.fillText(fmt(current),barX,barY-28);ctx.textAlign='right';ctx.fillText(duration?`-${fmt(Math.max(0,duration-current))}`:'—:—',barX+barW,barY-28);
+ roundedPath(ctx,barX,barY,barW,10,5);ctx.fillStyle='rgba(0,0,0,.5)';ctx.fill();roundedPath(ctx,barX,barY,Math.max(12,barW*progress),10,5);ctx.fillStyle='#fff';ctx.fill();
+ const controlsY=y+620;for(const [cx,rad] of [[x+160,52],[x+size/2,68],[x+size-160,52]]){ctx.beginPath();ctx.arc(cx,controlsY,rad,0,Math.PI*2);ctx.fillStyle='rgba(8,10,12,.38)';ctx.fill()}
+ ctx.fillStyle='#fff';ctx.beginPath();ctx.moveTo(x+167,controlsY-19);ctx.lineTo(x+167,controlsY+19);ctx.lineTo(x+197,controlsY);ctx.closePath();ctx.fill();ctx.fillRect(x+151,controlsY-19,8,38);
+ ctx.beginPath();ctx.moveTo(x+size/2-17,controlsY-27);ctx.lineTo(x+size/2+25,controlsY);ctx.lineTo(x+size/2-17,controlsY+27);ctx.closePath();ctx.fill();
+ ctx.beginPath();ctx.moveTo(x+size-167,controlsY-19);ctx.lineTo(x+size-167,controlsY+19);ctx.lineTo(x+size-197,controlsY);ctx.closePath();ctx.fill();ctx.fillRect(x+size-159,controlsY-19,8,38);
+ ctx.restore();ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=2;roundedPath(ctx,x,y,size,size,r);ctx.stroke();
+ ctx.textAlign='center';ctx.globalAlpha=.88;ctx.font='600 22px -apple-system,BlinkMacSystemFont,sans-serif';ctx.letterSpacing='5px';ctx.fillStyle='#fff';ctx.fillText('stash',960,y+size+55);ctx.letterSpacing='0px';ctx.globalAlpha=1;
  return await new Promise(resolve=>canvas.toBlob(resolve,'image/png'));
 }
-async function openStoryPreview(){
- const track=all.find(item=>item.id===pid);if(!track)return;
- $('#shareSheet').hidden=false;$('#playerScreen').setAttribute('aria-modal','false');$('#shareTitle').textContent='Story preview';$('#shareCaption').textContent='Save or share this image to post it to Instagram Stories.';$('#shareClose').focus();
- try{storyBlob=await makeStoryBlob(track);if(!storyBlob)throw new Error('Could not create preview');if(storyImageUrl)URL.revokeObjectURL(storyImageUrl);storyImageUrl=URL.createObjectURL(storyBlob);$('#sharePreview').src=storyImageUrl}
- catch(error){$('#shareCaption').textContent='Could not create the story image. Try another song cover.'}
+function updateShareTileHandle(){const tile=$('#shareTileMove');tile.style.setProperty('--tile-left',`${storyPosition.x/1920*100}%`);tile.style.setProperty('--tile-top',`${storyPosition.y/1080*100}%`)}
+function persistShareSettings(){try{localStorage.setItem('Stash-share-bg-mode',storyBgMode);localStorage.setItem('Stash-share-bg-color',storyBgColor);localStorage.setItem('Stash-share-position',JSON.stringify(storyPosition))}catch(x){}}
+async function renderStoryPreview(){
+ const track=storyTrack;if(!track)return;const token=++storyJob;storyBlob=null;$('#shareSave').disabled=$('#shareSend').disabled=true;$('#shareCaption').textContent='Updating your 16:9 share image…';
+ try{const blob=await makeStoryBlob(track);if(token!==storyJob)return;if(!blob)throw new Error('Could not create preview');if(storyImageUrl)URL.revokeObjectURL(storyImageUrl);storyBlob=blob;storyImageUrl=URL.createObjectURL(blob);$('#sharePreview').src=storyImageUrl;updateShareTileHandle();$('#shareCaption').textContent='Drag the square to move it. Save or share when ready.';$('#shareSave').disabled=$('#shareSend').disabled=false}
+ catch(error){if(token===storyJob)$('#shareCaption').textContent='Could not create the share image. Try again.'}
 }
+async function openStoryPreview(){
+ const track=all.find(item=>item.id===pid);if(!track)return;storyTrack=track;
+ $('#shareSheet').hidden=false;$('#playerScreen').setAttribute('aria-modal','false');$('#shareTitle').textContent='Share track';$('#shareBgBlur').setAttribute('aria-pressed',String(storyBgMode==='blurred'));$('#shareBgColorMode').setAttribute('aria-pressed',String(storyBgMode==='custom'));$('#shareBgColor').value=storyBgColor;updateShareTileHandle();$('#shareClose').focus();await renderStoryPreview();
+}
+function moveStoryTileTo(x,y){const size=720;storyPosition={x:Math.max(40,Math.min(1920-size-40,x)),y:Math.max(30,Math.min(1080-size-80,y))};updateShareTileHandle();persistShareSettings()}
+function beginTileMove(e){e.preventDefault();const rect=$('#shareStage').getBoundingClientRect();storyDrag={id:e.pointerId,startX:e.clientX,startY:e.clientY,x:storyPosition.x,y:storyPosition.y,rect};e.currentTarget.classList.add('moving');e.currentTarget.setPointerCapture(e.pointerId)}
+function updateTileMove(e){if(!storyDrag||storyDrag.id!==e.pointerId)return;const {startX,startY,x,y,rect}=storyDrag;moveStoryTileTo(x+(e.clientX-startX)*1920/rect.width,y+(e.clientY-startY)*1080/rect.height)}
+function finishTileMove(e){if(!storyDrag||storyDrag.id!==e.pointerId)return;const moved=Math.abs(storyPosition.x-storyDrag.x)+Math.abs(storyPosition.y-storyDrag.y)>0;storyDrag=null;$('#shareTileMove').classList.remove('moving');if(moved)renderStoryPreview()}
+function moveTileByKeys(e){const step=e.shiftKey?80:24;let{x,y}=storyPosition;if(e.key==='ArrowLeft')x-=step;else if(e.key==='ArrowRight')x+=step;else if(e.key==='ArrowUp')y-=step;else if(e.key==='ArrowDown')y+=step;else return;e.preventDefault();moveStoryTileTo(x,y);renderStoryPreview()}
+function setStoryBackground(mode){storyBgMode=mode;$('#shareBgBlur').setAttribute('aria-pressed',String(mode==='blurred'));$('#shareBgColorMode').setAttribute('aria-pressed',String(mode==='custom'));persistShareSettings();renderStoryPreview()}
 function closeStoryPreview(){ $('#shareSheet').hidden=true;$('#playerScreen').setAttribute('aria-modal','true');$('#shareTrack').focus() }
-function saveStoryImage(){if(!storyBlob)return;const link=document.createElement('a');link.href=storyImageUrl;link.download='Stash-story.png';link.click()}
+function saveStoryImage(){if(!storyBlob)return;const link=document.createElement('a');link.href=storyImageUrl;link.download='stash-track.png';link.style.display='none';document.body.append(link);link.click();link.remove()}
 async function shareStoryImage(){
- if(!storyBlob)return;const file=new File([storyBlob],'Stash-story.png',{type:'image/png'});
- try{if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Song story'});return}}
- catch(error){if(error.name==='AbortError')return}
- saveStoryImage();$('#shareCaption').textContent='Image saved as Stash-story.png. Open it from your photo library or downloads to add it to your Instagram Story.';
+ if(!storyBlob)return;const file=new File([storyBlob],'stash-track.png',{type:'image/png'});
+ if(navigator.share&&navigator.canShare?.({files:[file]})){try{await navigator.share({files:[file],title:'Song artwork'});$('#shareCaption').textContent='Shared.'}catch(error){if(error.name!=='AbortError')$('#shareCaption').textContent='Sharing is unavailable here. Use Save image, then share it from Photos or Downloads.'}return}
+ saveStoryImage();$('#shareCaption').textContent='Saved as stash-track.png. You can share it from Photos or Downloads.';
 }
 async function newList(){
  const n=prompt('Playlist name');if(!n||!n.trim())return;
@@ -482,7 +528,6 @@ async function play(t,l){
  const token=++playToken;
  if(!au.getAttribute('src')){au.src=SILENT;au.play().catch(()=>{})} // unlocks audio inside the tap
  pl=l;pid=t.id;render();
- openPlayer();
  const b=await run(['blob'],'readonly',s=>s.get(t.id));
  if(token!==playToken||!b)return;
  if(url)URL.revokeObjectURL(url);
@@ -522,6 +567,7 @@ $('#ed').onclick=()=>{edit=!edit;render()};
 $('#bk').onclick=()=>{lv=null;edit=false;render()};
 $('#nw').onclick=newList;
 $('#settingsOpen').onclick=openSettings;$('#welcomeSettings').onclick=openSettings;$('#settingsClose').onclick=closeSettings;
+$('#backupExport').onclick=exportBackup;$('#backupSave').onclick=savePreparedBackup;$('#backupImport').onclick=()=>$('#backupFile').click();$('#backupFile').onchange=e=>{const file=e.target.files[0];e.target.value='';importBackup(file)};
 $('#lyricsEditorClose').onclick=closeLyricsEditor;$('#lyricsCancel').onclick=closeLyricsEditor;$('#lyricsSave').onclick=saveLyrics;
 $('#lyricsInput').onkeydown=e=>{if((e.metaKey||e.ctrlKey)&&e.key==='Enter'){e.preventDefault();saveLyrics()}};
 $('#themeOptions').onclick=e=>{const b=e.target.closest('[data-theme-choice]');if(b)applyTheme(b.dataset.themeChoice)};
@@ -529,6 +575,8 @@ $('#accentOptions').onclick=e=>{const b=e.target.closest('[data-accent-choice]')
 $('#customAccentColor').oninput=e=>{customAccent=e.target.value;document.body.style.setProperty('--custom-accent',customAccent);applyAccent('custom');try{localStorage.setItem('Stash-custom-accent',customAccent)}catch(x){}};
 $('#lyricHighlightColor').oninput=e=>{lyricsHighlight=e.target.value;document.body.style.setProperty('--lyric-highlight',lyricsHighlight);try{localStorage.setItem('Stash-lyric-highlight',lyricsHighlight)}catch(x){}};
 $('#shareTrack').onclick=openStoryPreview;$('#shareClose').onclick=closeStoryPreview;$('#shareSave').onclick=saveStoryImage;$('#shareSend').onclick=shareStoryImage;
+$('#shareTileMove').addEventListener('pointerdown',beginTileMove);$('#shareTileMove').addEventListener('pointermove',updateTileMove);$('#shareTileMove').addEventListener('pointerup',finishTileMove);$('#shareTileMove').addEventListener('pointercancel',finishTileMove);$('#shareTileMove').addEventListener('keydown',moveTileByKeys);
+$('#shareBgBlur').onclick=()=>setStoryBackground('blurred');$('#shareBgColorMode').onclick=()=>setStoryBackground('custom');$('#shareBgColor').oninput=e=>{storyBgColor=e.target.value;setStoryBackground('custom')};
 $('#lyricsTrackingToggle').onclick=()=>{lyricsTracking=!lyricsTracking;$('#lyricsTrackingToggle').setAttribute('aria-checked',String(lyricsTracking));try{localStorage.setItem('Stash-lyrics-tracking',String(lyricsTracking))}catch(x){}const c=all.find(x=>x.id===pid);if(c)renderLyrics(c)};
 $('#artworkChangeBtn').onclick=()=>$('#welcomeArtworkFile').click();
 $('#artworkRemoveBtn').onclick=async()=>{await run(['blob'],'readwrite',s=>s.delete('welcome-art'));applyWelcomeArtwork(null)};
@@ -611,7 +659,7 @@ $('#playerBack').innerHTML=I.back;$('#playerClose').innerHTML=I.close;$('#lyrics
 $('#lyricsEditorClose').innerHTML=I.close;
 
 (async()=>{
- let theme='mono';try{theme=localStorage.getItem('Stash-theme')||theme;accentChoice=localStorage.getItem('Stash-accent')||accentChoice;customAccent=localStorage.getItem('Stash-custom-accent')||customAccent;lyricsTracking=localStorage.getItem('Stash-lyrics-tracking')!=='false';lyricsHighlight=localStorage.getItem('Stash-lyric-highlight')||lyricsHighlight}catch(x){}$('#customAccentColor').value=customAccent;$('#lyricHighlightColor').value=lyricsHighlight;document.body.style.setProperty('--lyric-highlight',lyricsHighlight);$('#lyricsTrackingToggle').setAttribute('aria-checked',String(lyricsTracking));applyTheme(theme,false);
+ let theme='mono';try{theme=localStorage.getItem('Stash-theme')||theme;accentChoice=localStorage.getItem('Stash-accent')||accentChoice;customAccent=localStorage.getItem('Stash-custom-accent')||customAccent;lyricsTracking=localStorage.getItem('Stash-lyrics-tracking')!=='false';lyricsHighlight=localStorage.getItem('Stash-lyric-highlight')||lyricsHighlight;storyBgMode=localStorage.getItem('Stash-share-bg-mode')||storyBgMode;if(!['blurred','custom'].includes(storyBgMode))storyBgMode='blurred';storyBgColor=localStorage.getItem('Stash-share-bg-color')||storyBgColor;const savedPosition=JSON.parse(localStorage.getItem('Stash-share-position')||'null');if(savedPosition&&Number.isFinite(savedPosition.x)&&Number.isFinite(savedPosition.y))storyPosition={x:Math.max(40,Math.min(1160,savedPosition.x)),y:Math.max(30,Math.min(280,savedPosition.y))}}catch(x){}$('#customAccentColor').value=customAccent;$('#lyricHighlightColor').value=lyricsHighlight;$('#shareBgColor').value=storyBgColor;document.body.style.setProperty('--lyric-highlight',lyricsHighlight);$('#lyricsTrackingToggle').setAttribute('aria-checked',String(lyricsTracking));applyTheme(theme,false);
 $('#welcome').hidden=false;$('#welcomeStart').focus();
  db=await open();await load();
  if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();
