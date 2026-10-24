@@ -87,6 +87,16 @@ li.tools-open .b{display:flex}
 .b button{color:var(--mut);width:38px;height:36px;padding:0;display:grid;place-items:center;border-radius:999px;background:rgba(127,127,127,.08);transition:transform .22s var(--ease),background-color .22s ease,color .22s ease}
 .b button:active{color:var(--acc);background:var(--line)}
 .drag-handle{touch-action:none!important;cursor:grab;color:var(--mut)}
+#list.ed li[data-track-id]{min-height:54px;padding:6px 9px;gap:3px;border-radius:12px}
+#list.ed li[data-track-id]+li[data-track-id]{margin-top:4px;border-top:0}
+#list.ed li[data-track-id] .cv{width:40px;height:40px;margin-right:5px;border-radius:10px}
+#list.ed li[data-track-id] .t{font-size:14px;line-height:1.2}
+#list.ed li[data-track-id] .a{font-size:11px;line-height:1.2;margin-top:2px}
+#list.ed li[data-track-id] .n{width:20px;font-size:11px}
+#list.ed li[data-track-id] .drag-handle{width:40px;height:40px;flex:none;padding:0;display:grid;place-items:center;border-radius:12px;background:var(--line);color:var(--acc)}
+#list.ed li[data-track-id] .drag-handle svg{width:20px;height:20px}
+#list.ed li[data-track-id] .edit-more{width:30px;height:30px;margin-left:0}
+#list.ed li[data-track-id].tools-open{padding-bottom:9px}
 #list.ed li.dragging{opacity:.45;transform:scale(.98)}#list.ed li.drop-target{box-shadow:inset 0 0 0 2px var(--acc)}
 li.empty{display:block;min-height:0;background:none;border:0;color:var(--mut);text-align:center;padding:40px 24px}
 #editHint{margin:0;padding:0 24px 10px;color:var(--mut);font-size:12px}#editHint[hidden]{display:none}
