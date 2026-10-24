@@ -1,5 +1,5 @@
-const CACHE = 'tracks-v2.1';
-const CORE = ['./', './index.html', './manifest.webmanifest', './icon.png'];
+const CACHE = 'stash-v2.1';
+const CORE = ['./', './index.html', './manifest.webmanifest', './app-icon-v2.png'];
 
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(CORE)).then(() => self.skipWaiting()));
