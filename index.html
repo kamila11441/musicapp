@@ -382,7 +382,7 @@ async function exportBackup(){
   const [meta,lists,blobEntries]=await Promise.all([readBackupStore('meta'),readBackupStore('lists'),readBackupStore('blob')]);
   const blobs=[];for(const [key,value] of blobEntries){if(!(value instanceof Blob))continue;blobs.push({key,type:value.type||'application/octet-stream',name:value instanceof File?value.name:null,lastModified:value instanceof File?value.lastModified:null,data:toBase64(await value.arrayBuffer())})}
   const backup={format:'tracks-library-backup',version:1,createdAt:new Date().toISOString(),stores:{meta:meta.map(([,v])=>v),lists:lists.map(([,v])=>v),blob:blobs},settings:BACKUP_SETTINGS.map(key=>[key,localStorage.getItem(key)]).filter(([,value])=>value!==null)};
-  const filename=`tracks-backup-${new Date().toISOString().slice(0,10)}.json`;preparedBackupFile=new File([JSON.stringify(backup)],filename,{type:'application/json'});$('#backupSave').hidden=false;status.textContent=`Backup ready · ${meta.length} songs, ${lists.length} playlists. Tap Save backup file to store it.`;
+  const filename=`Stash-backup-${new Date().toISOString().slice(0,10)}.json`;preparedBackupFile=new File([JSON.stringify(backup)],filename,{type:'application/json'});$('#backupSave').hidden=false;status.textContent=`Backup ready · ${meta.length} songs, ${lists.length} playlists. Tap Save backup file to store it.`;
  }catch(error){status.textContent=`Backup failed: ${error.message||'Unable to read library'}`}
 }
 async function savePreparedBackup(){
