@@ -53,7 +53,7 @@ footer{padding:12px 20px calc(14px + env(safe-area-inset-bottom));border-top:1px
 <footer>
 <div id="now">Nothing playing</div>
 <input id="seek" type="range" min="0" max="1000" value="0">
-<div id="tm">0:00 / 0:00</div>
+<div id="tm">0:00 / 0:00<span style="float:right">v6</span></div>
 <div class="ctl"><button id="sh">Shuffle</button><button id="pv">Prev</button><button id="pp">Play</button><button id="nx">Next</button><button id="rp">Repeat</button></div>
 </footer>
 <audio id="au" preload="auto"></audio>
@@ -187,7 +187,7 @@ au.onplay=au.onpause=()=>{$('#pp').textContent=au.paused?'Play':'Pause'};
 au.ontimeupdate=()=>{
  if(!url)return;
  if(!drag&&au.duration)$('#seek').value=au.currentTime/au.duration*1000;
- $('#tm').textContent=fmt(au.currentTime)+' / '+fmt(au.duration);
+ $('#tm').firstChild.textContent=fmt(au.currentTime)+' / '+fmt(au.duration);
  try{navigator.mediaSession.setPositionState({duration:au.duration,position:au.currentTime,playbackRate:1})}catch(x){}
 };
 $('#seek').oninput=()=>{drag=true};
