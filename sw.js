@@ -1,4 +1,4 @@
-const CACHE = 'stash-v25';
+const CACHE = 'stash-v2.5';
 const CORE = ['./', './index.html', './manifest.webmanifest', './icon.png'];
 
 self.addEventListener('install', event => {
