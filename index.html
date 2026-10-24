@@ -44,8 +44,11 @@ body[data-accent="custom"] #seek::-moz-range-progress{height:4px;border-radius:2
 body[data-accent="custom"] #seek::-moz-range-thumb{background:var(--custom-accent);border:0}
 body[data-accent="custom"] #playerSeek{accent-color:var(--custom-accent)}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
-html,body{height:100%;margin:0;overscroll-behavior:none}
-body{background-color:var(--bg);background-image:var(--page-gradient);background-attachment:fixed;color:var(--fg);font:16px/1.4 -apple-system,system-ui,"SF Pro Text","Helvetica Neue",sans-serif;display:flex;flex-direction:column}
+html,body{height:100%;min-height:100dvh;margin:0;overscroll-behavior:none}
+body{height:100dvh;min-height:100dvh;isolation:isolate;background-color:var(--bg);background-image:var(--page-gradient);background-attachment:scroll;color:var(--fg);font:16px/1.4 -apple-system,system-ui,"SF Pro Text","Helvetica Neue",sans-serif;display:flex;flex-direction:column}
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-color:var(--bg);background-image:var(--page-gradient);background-size:cover;background-position:center}
+body:has(#welcome:not([hidden]))::before{background-color:#f8f4ef;background-image:var(--welcome-gradient)}
+body.playing::before{background-color:var(--bg);background-image:var(--player-gradient)}
 body.playing{background:var(--player-gradient);background-position:center;background-size:100% 100%;background-repeat:no-repeat;background-attachment:fixed}
 header{padding:env(safe-area-inset-top) 20px 0}
 nav{display:flex;align-items:center;gap:18px;height:50px}
@@ -98,7 +101,7 @@ footer{margin:0 10px calc(8px + env(safe-area-inset-bottom));padding:12px 18px 8
 .ctl button.on{color:var(--acc)}
 #pp{width:60px;height:60px;border-radius:50%;background:var(--acc);color:var(--on);box-shadow:0 6px 14px rgba(49,94,85,.24)}
 .ctl button:not(#pp){width:50px;height:50px;border:1px solid rgba(49,75,65,.26);border-radius:50%;background:rgba(255,255,255,.18)}
-#welcome{position:fixed;inset:0;z-index:5;width:100%;height:100vh;height:100dvh;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;padding:calc(24px + env(safe-area-inset-top)) 24px calc(22px + env(safe-area-inset-bottom));overflow:auto;background-color:#f8f4ef;background-image:var(--welcome-gradient);background-attachment:fixed;color:#523a57}
+#welcome{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:space-between;padding:calc(24px + env(safe-area-inset-top)) 24px calc(22px + env(safe-area-inset-bottom));overflow:auto;background-color:#f8f4ef;background-image:var(--welcome-gradient);background-size:cover;background-position:center;background-attachment:scroll;color:#523a57}
 #welcome:not([hidden]){animation:playerEnter .42s var(--ease) both}
 .welcome-mark{font-size:14px;letter-spacing:.23em;text-transform:uppercase;opacity:.88;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .welcome-mark button{font-size:13px;letter-spacing:normal;text-transform:none;color:inherit;border:1px solid rgba(82,58,87,.24);border-radius:22px;padding:7px 11px;background:rgba(255,255,255,.48)}
@@ -179,7 +182,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
 </head>
 <body data-theme="mono" data-accent="welcome">
 <section id="welcome" hidden aria-label="Welcome to Stash">
- <div class="welcome-mark">Stash · your space <button id="welcomeSettings" type="button">Settings</button></div>
+ <div class="welcome-mark">Stash · your music, your space<button id="welcomeSettings" type="button">Settings</button></div>
  <div class="welcome-art"><div class="welcome-disc" id="welcomeDisc"><svg viewBox="0 0 120 120" fill="none"><path d="M26 60h8m6-17v34m16-49v64m18-46v28m16-44v60m16-39v18" stroke="#f8f8f2" stroke-width="8" stroke-linecap="round"/><circle cx="60" cy="60" r="51" stroke="rgba(248,248,242,.38)" stroke-width="1.5"/></svg></div></div>
  <div class="welcome-copy"><div class="welcome-kicker">A little room to listen</div><h2>Make space<br>for sound.</h2><p>Your music stays yours. Add a few Stash and settle in.</p></div>
  <div class="welcome-actions"><button id="welcomeStart">Start listening</button><button id="welcomeImport">Add music</button></div>
@@ -193,7 +196,7 @@ body.playing>header,body.playing>#cv,body.playing>#list,body.playing>footer{visi
 <footer aria-label="Audio player">
 <div class="np"><span class="cv" id="art" role="button" tabindex="0" aria-label="Open now playing"></span><div id="now" role="button" tabindex="0" aria-label="Open now playing" aria-live="polite">Nothing playing</div></div>
 <input id="seek" type="range" min="0" max="1000" value="0">
- <div id="tm">0:00 / 0:00<span style="float:right">v2.3</span></div>
+ <div id="tm">0:00 / 0:00<span style="float:right">v32</span></div>
 <div class="ctl"><button id="sh" aria-label="Shuffle"></button><button id="pv" aria-label="Previous"></button><button id="pp" aria-label="Play or pause"></button><button id="nx" aria-label="Next"></button><button id="rp" aria-label="Repeat"></button></div>
 </footer>
 <section id="playerScreen" hidden role="dialog" aria-modal="true" aria-labelledby="playerTitle">
