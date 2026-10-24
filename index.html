@@ -47,7 +47,7 @@ body[data-accent="custom"] #playerSeek{accent-color:var(--custom-accent)}
 html,body{height:100%;min-height:0;margin:0;overscroll-behavior:none}
 html{background-color:var(--bg);background-image:var(--page-gradient)}
 html:has(#welcome:not([hidden])){background-color:#f8f4ef;background-image:var(--welcome-gradient,none);background-size:cover;background-position:center}
-body{height:100vh;height:var(--app-height,100dvh);min-height:0;overflow:hidden;isolation:isolate;background-color:var(--bg);background-image:var(--page-gradient);background-attachment:scroll;color:var(--fg);font:16px/1.4 -apple-system,system-ui,"SF Pro Text","Helvetica Neue",sans-serif;display:flex;flex-direction:column}
+body{height:100vh;height:var(--app-height,100dvh);height:max(var(--app-height,100dvh),100dvh);min-height:0;overflow:hidden;isolation:isolate;background-color:var(--bg);background-image:var(--page-gradient);background-attachment:scroll;color:var(--fg);font:16px/1.4 -apple-system,system-ui,"SF Pro Text","Helvetica Neue",sans-serif;display:flex;flex-direction:column}
 body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-color:var(--bg);background-image:var(--page-gradient);background-size:cover;background-position:center}
 body:has(#welcome:not([hidden]))::before{background-color:#f8f4ef;background-image:var(--welcome-gradient)}
 body.playing::before{background-color:var(--bg);background-image:var(--player-gradient)}
@@ -109,7 +109,7 @@ footer{flex:0 0 auto;margin:0 10px calc(8px + env(safe-area-inset-bottom));paddi
 .ctl button.on{color:var(--acc)}
 #pp{width:60px;height:60px;border-radius:50%;background:var(--acc);color:var(--on);box-shadow:0 6px 14px rgba(49,94,85,.24)}
 .ctl button:not(#pp){width:50px;height:50px;border:1px solid rgba(49,75,65,.26);border-radius:50%;background:rgba(255,255,255,.18)}
-#welcome{position:fixed;inset:0;z-index:5;display:flex;flex-direction:column;justify-content:space-between;padding:calc(24px + env(safe-area-inset-top)) 24px calc(22px + env(safe-area-inset-bottom));overflow:auto;background-color:#f8f4ef;background-image:var(--welcome-gradient);background-size:cover;background-position:center;background-attachment:scroll;color:#523a57}
+#welcome{position:fixed;inset:0 0 auto;z-index:5;height:100vh;height:100dvh;height:max(var(--app-height,100dvh),100dvh);min-height:0;display:flex;flex-direction:column;justify-content:space-between;padding:calc(24px + env(safe-area-inset-top)) 24px calc(22px + env(safe-area-inset-bottom));overflow:auto;background-color:#f8f4ef;background-image:var(--welcome-gradient);background-size:cover;background-position:center;background-attachment:scroll;color:#523a57}
 #welcome:not([hidden]){animation:playerEnter .42s var(--ease) both}
 .welcome-mark{font-size:14px;letter-spacing:.23em;text-transform:uppercase;opacity:.88;display:flex;align-items:center;justify-content:space-between;gap:12px}
 .welcome-mark button{font-size:13px;letter-spacing:normal;text-transform:none;color:inherit;border:1px solid rgba(82,58,87,.24);border-radius:22px;padding:7px 11px;background:rgba(255,255,255,.48)}
@@ -381,19 +381,19 @@ async function exportBackup(){
  try{
   const [meta,lists,blobEntries]=await Promise.all([readBackupStore('meta'),readBackupStore('lists'),readBackupStore('blob')]);
   const blobs=[];for(const [key,value] of blobEntries){if(!(value instanceof Blob))continue;blobs.push({key,type:value.type||'application/octet-stream',name:value instanceof File?value.name:null,lastModified:value instanceof File?value.lastModified:null,data:toBase64(await value.arrayBuffer())})}
-  const backup={format:'tracks-library-backup',version:1,createdAt:new Date().toISOString(),stores:{meta:meta.map(([,v])=>v),lists:lists.map(([,v])=>v),blob:blobs},settings:BACKUP_SETTINGS.map(key=>[key,localStorage.getItem(key)]).filter(([,value])=>value!==null)};
-  const filename=`Stash-backup-${new Date().toISOString().slice(0,10)}.json`;preparedBackupFile=new File([JSON.stringify(backup)],filename,{type:'application/json'});$('#backupSave').hidden=false;status.textContent=`Backup ready · ${meta.length} songs, ${lists.length} playlists. Tap Save backup file to store it.`;
+  const backup={format:'stash-library-backup',version:1,createdAt:new Date().toISOString(),stores:{meta:meta.map(([,v])=>v),lists:lists.map(([,v])=>v),blob:blobs},settings:BACKUP_SETTINGS.map(key=>[key,localStorage.getItem(key)]).filter(([,value])=>value!==null)};
+  const filename=`stash-backup-${new Date().toISOString().slice(0,10)}.json`;preparedBackupFile=new File([JSON.stringify(backup)],filename,{type:'application/json'});$('#backupSave').hidden=false;status.textContent=`Backup ready · ${meta.length} songs, ${lists.length} playlists. Tap Save backup file to store it.`;
  }catch(error){status.textContent=`Backup failed: ${error.message||'Unable to read library'}`}
 }
 async function savePreparedBackup(){
  const file=preparedBackupFile,status=$('#backupStatus');if(!file){status.textContent='Prepare a backup first.';return}
- try{if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Tracks music backup'});status.textContent='Backup shared or saved.';return}const href=URL.createObjectURL(file),a=document.createElement('a');a.href=href;a.download=file.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),60000);status.textContent='Backup file saved.'}catch(error){status.textContent=error.name==='AbortError'?'Save cancelled.':`Could not save backup: ${error.message||'Please try again.'}`}
+ try{if(navigator.share&&navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title:'Stash music backup'});status.textContent='Backup shared or saved.';return}const href=URL.createObjectURL(file),a=document.createElement('a');a.href=href;a.download=file.name;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(href),60000);status.textContent='Backup file saved.'}catch(error){status.textContent=error.name==='AbortError'?'Save cancelled.':`Could not save backup: ${error.message||'Please try again.'}`}
 }
 async function importBackup(file){
  const status=$('#backupStatus');if(!file)return;status.textContent='Reading backup…';
  try{
   const backup=JSON.parse(await file.text());
-  if(backup.format!=='tracks-library-backup'||backup.version!==1||!Array.isArray(backup.stores?.meta)||!Array.isArray(backup.stores?.lists)||!Array.isArray(backup.stores?.blob)||!Array.isArray(backup.settings))throw new Error('This file is not a supported Tracks backup.');
+  if(!['tracks-library-backup','stash-library-backup'].includes(String(backup.format).toLowerCase())||backup.version!==1||!Array.isArray(backup.stores?.meta)||!Array.isArray(backup.stores?.lists)||!Array.isArray(backup.stores?.blob)||!Array.isArray(backup.settings))throw new Error('This file is not a supported Stash backup.');
   const decoded=[];for(const entry of backup.stores.blob){if(typeof entry.key!=='string'||typeof entry.data!=='string')throw new Error('The backup contains invalid artwork or audio data.');const blob=new Blob([fromBase64(entry.data)],{type:entry.type||'application/octet-stream'});const value=entry.name?new File([blob],entry.name,{type:blob.type,lastModified:Number(entry.lastModified)||Date.now()}):blob;decoded.push([entry.key,value])}
   if(!confirm(`Restore ${backup.stores.meta.length} songs and ${backup.stores.lists.length} playlists? This replaces the music and settings currently in this app.`)){status.textContent='Import cancelled.';return}
   await new Promise((resolve,reject)=>{const tx=db.transaction(['meta','lists','blob'],'readwrite');for(const name of ['meta','lists','blob'])tx.objectStore(name).clear();for(const value of backup.stores.meta)tx.objectStore('meta').put(value);for(const value of backup.stores.lists)tx.objectStore('lists').put(value);for(const [key,value] of decoded)tx.objectStore('blob').put(value,key);tx.oncomplete=resolve;tx.onerror=tx.onabort=()=>reject(tx.error||new Error('Could not restore backup'))});
