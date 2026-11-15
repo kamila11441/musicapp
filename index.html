@@ -1078,10 +1078,11 @@ async function moveTrack(t){
 }
 async function addTrackToFolder(t){
  if(t.owner_id&&t.owner_id!==stashAccountSession?.user?.id){await stashAlert('Track unavailable','Only the person who added this track can place it in playlists.');return}
- const choices=lists.filter(f=>f.id!=='blender'&&(!f.owner_id||f.owner_id===stashAccountSession?.user?.id));
+ const choices=lists.filter(f=>f.id==='blender'||(!f.owner_id||f.owner_id===stashAccountSession?.user?.id));
  if(!choices.length){await stashAlert('No playlists yet','Create a playlist first, then add this track to it.');return}
- const selected=await stashDialog({title:'Add to playlists',copy:`Choose any of your playlists for “${t.name}”. Existing copies stay selected.`,kind:'options',multiple:true,options:choices.map(f=>({id:f.id,name:f.name,selected:(t.folders||(t.list?[t.list]:[])).includes(f.id)})),confirm:'Save playlists'});if(selected===null)return;
- const folders=[...new Set([...(t.folders||(t.list?[t.list]:[])).filter(id=>id==='blender'),...selected])];
+ const currentFolders=Array.isArray(t.folders)&&t.folders.length?t.folders:(t.list?[t.list]:[]);
+ const selected=await stashDialog({title:'Add to playlists',copy:`Choose any of your playlists for “${t.name}”. Blender is shared with everyone. Existing copies stay selected.`,kind:'options',multiple:true,options:choices.map(f=>({id:f.id,name:f.id==='blender'?'Blender · shared with everyone':f.name,selected:currentFolders.includes(f.id)})),confirm:'Save playlists'});if(selected===null)return;
+ const folders=[...new Set([...currentFolders.filter(id=>id==='blender'),...selected])];
  await run(['meta'],'readwrite',m=>m.put({...t,folders,list:t.list||folder.id}));await load();
 }
 async function moveTrackToPosition(fromId,toId){
@@ -1284,25 +1285,26 @@ async function syncStashCloud(){
   for(const folder of localFolders.filter(f=>!f.deleted_local&&f.id&&f.id!=='blender'&&(!f.owner_id||f.owner_id===userId))){
    const {error}=await stashAuth.from('stash_folders').upsert({id:folder.id,owner_id:userId,name:folder.name,mood_tags:folder.mood_tags||[],owner_name:folder.visibility==='public'?(stashAccountProfile?.display_name||'Stash member'):null,visibility:folder.visibility==='public'?'public':'private',updated_at:new Date().toISOString()},{onConflict:'id'});if(error)throw error;
   }
-  const ownTracks=localTracks.filter(t=>!t.deleted_local&&(!t.owner_id||t.owner_id===userId));
-  for(const t of ownTracks){
-   const blob=await run(['blob'],'readonly',b=>b.get(t.id));
-   const trackRow={id:t.id,owner_id:userId,name:t.name||'Untitled',author:t.author||'',file_name:t.file_name||`${t.name||'track'}.audio`,mime_type:t.mime_type||blob?.type||'application/octet-stream',byte_size:t.byte_size||blob?.size||0,duration_seconds:t.duration_seconds||null,lyrics:t.lyrics||null,updated_at:new Date().toISOString()};
-   const {error:trackError}=await stashAuth.from('stash_tracks').upsert(trackRow,{onConflict:'id'});if(trackError)throw trackError;
-   let fileInfo=null;
-   if(blob){const name=`${t.name||'Track'}${t.file_name&&/\.[^./]+$/.test(t.file_name)?t.file_name.match(/\.[^./]+$/)[0]:'.audio'}`;fileInfo=await uploadDriveFile(blob,name,trackRow.mime_type,t.id)}
-   else {const status=await stashDriveCall('track-status',{trackId:t.id});if(status.uploaded)fileInfo={fileId:status.fileId};else throw new Error(`“${t.name||'Untitled'}” has no audio on this device or in shared Stash storage. Re-import the audio file, then sync again.`)}
-   const folderIds=[...new Set((Array.isArray(t.folders)?t.folders:(t.list?[t.list]:[])).filter(Boolean))];
-   const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});const sharedMediaRef=sharing.sharedFileId||null;
-   const {data:oldMemberships,error:oldMembershipError}=await stashAuth.from('stash_folder_tracks').select('folder_id').eq('track_id',t.id);if(oldMembershipError)throw oldMembershipError;
-   for(const membership of oldMemberships||[])if(!folderIds.includes(membership.folder_id)){const {error}=await stashAuth.from('stash_folder_tracks').delete().eq('track_id',t.id).eq('folder_id',membership.folder_id);if(error)throw error;}
-   for(const folderId of folderIds){
-    const folderIsShared=folderId==='blender'||lists.find(f=>f.id===folderId)?.visibility==='public';
-    const {error}=await stashAuth.from('stash_folder_tracks').upsert({folder_id:folderId,track_id:t.id,added_by:userId,shared_media_ref:folderIsShared?sharedMediaRef:null},{onConflict:'folder_id,track_id'});if(error)throw error;
-   }
-   await run(['meta'],'readwrite',m=>m.put({...t,owner_id:userId,media_ref:fileInfo?.fileId||t.media_ref,media_provider:'google_drive',cloud_synced:true,shared_media_ref:sharedMediaRef,folders:folderIds,list:folderIds[0]||''}));
+ const ownTracks=localTracks.filter(t=>!t.deleted_local&&(!t.owner_id||t.owner_id===userId)),syncFailures=[];let syncedCount=0;
+ for(let index=0;index<ownTracks.length;index++){
+   const t=ownTracks[index];setDriveStatus(`Syncing song ${index+1} of ${ownTracks.length}: ${t.name||'Untitled'}…`);
+   try{
+    const blob=await run(['blob'],'readonly',b=>b.get(t.id));
+    const trackRow={id:t.id,owner_id:userId,name:t.name||'Untitled',author:t.author||'',file_name:t.file_name||`${t.name||'track'}.audio`,mime_type:t.mime_type||blob?.type||'application/octet-stream',byte_size:t.byte_size||blob?.size||0,duration_seconds:t.duration_seconds||null,lyrics:t.lyrics||null,updated_at:new Date().toISOString()};
+    const {error:trackError}=await stashAuth.from('stash_tracks').upsert(trackRow,{onConflict:'id'});if(trackError)throw trackError;
+    let fileInfo=null;const status=await stashDriveCall('track-status',{trackId:t.id});
+    if(status.uploaded)fileInfo={fileId:status.fileId};
+    else if(blob){const name=`${t.name||'Track'}${t.file_name&&/\.[^./]+$/.test(t.file_name)?t.file_name.match(/\.[^./]+$/)[0]:'.audio'}`;fileInfo=await uploadDriveFile(blob,name,trackRow.mime_type,t.id)}
+    else throw new Error(`“${t.name||'Untitled'}” has no audio on this device or in shared Stash storage. Re-import the audio file, then sync again.`);
+    const folderIds=[...new Set((Array.isArray(t.folders)&&t.folders.length?t.folders:(t.list?[t.list]:[])).filter(Boolean))];
+    const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});const sharedMediaRef=sharing.sharedFileId||null;
+    const {data:oldMemberships,error:oldMembershipError}=await stashAuth.from('stash_folder_tracks').select('folder_id').eq('track_id',t.id);if(oldMembershipError)throw oldMembershipError;
+    for(const membership of oldMemberships||[])if(!folderIds.includes(membership.folder_id)){const {error}=await stashAuth.from('stash_folder_tracks').delete().eq('track_id',t.id).eq('folder_id',membership.folder_id);if(error)throw error;}
+    for(const folderId of folderIds){const folderIsShared=folderId==='blender'||lists.find(f=>f.id===folderId)?.visibility==='public';const {error}=await stashAuth.from('stash_folder_tracks').upsert({folder_id:folderId,track_id:t.id,added_by:userId,shared_media_ref:folderIsShared?sharedMediaRef:null},{onConflict:'folder_id,track_id'});if(error)throw error;}
+    await run(['meta'],'readwrite',m=>m.put({...t,owner_id:userId,media_ref:fileInfo?.fileId||t.media_ref,media_provider:'google_drive',cloud_synced:true,shared_media_ref:sharedMediaRef,folders:folderIds,list:folderIds[0]||''}));syncedCount++;
+   }catch(error){syncFailures.push(`${t.name||'Untitled'}: ${error.message||'sync failed'}`)}
   }
-  await loadRemoteStashMetadata();await load();setDriveStatus('Synced to private Stash storage. Blender copies are shared with everyone.');
+  await loadRemoteStashMetadata();await load();if(syncFailures.length)throw new Error(`Synced ${syncedCount} of ${ownTracks.length} songs. ${syncFailures.slice(0,3).join(' · ')}${syncFailures.length>3?` · and ${syncFailures.length-3} more`:''}`);setDriveStatus(`Synced ${syncedCount} songs to private Stash storage. Blender copies are shared with everyone.`);
  }finally{cloudSyncing=false;syncAccountUI()}
 }
 $('#syncCloudButton').onclick=async()=>{try{await syncStashCloud()}catch(error){setDriveStatus(error.message||'Cloud sync failed.')}};
