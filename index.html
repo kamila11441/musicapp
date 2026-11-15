@@ -781,7 +781,7 @@ async function voteBlenderTrack(trackId,vote){
  if(!blenderReactionsReady){await stashAlert('Blender reactions need setup','Run setup-stash-blender-reactions.sql in the Supabase SQL editor, then reload Stash.');return}
  const prior={...(blenderVotes[trackId]||{up:0,down:0,mine:0})},next={...prior};if(next.mine===vote){next[vote>0?'up':'down']=Math.max(0,next[vote>0?'up':'down']-1);next.mine=0}else{if(next.mine)next[next.mine>0?'up':'down']=Math.max(0,next[next.mine>0?'up':'down']-1);next[vote>0?'up':'down']++;next.mine=vote}blenderVotes={...blenderVotes,[trackId]:next};render();
  try{if(next.mine===0){const {error}=await stashAuth.from('stash_blender_reactions').delete().eq('track_id',trackId).eq('user_id',userId);if(error)throw error}else{const {error}=await stashAuth.from('stash_blender_reactions').upsert({track_id:trackId,user_id:userId,vote:next.mine,updated_at:new Date().toISOString()},{onConflict:'track_id,user_id'});if(error)throw error}}
- catch(error){blenderVotes={...blenderVotes,[trackId]:prior};render();await stashAlert('Could not save reaction',error.message||'Please try again.')}
+ catch(error){blenderVotes={...blenderVotes,[trackId]:prior};render();const message=error?.code==='42501'?'This track is not registered in shared Blender storage yet. Sync your library, then try again.':(error.message||'Please try again.');await stashAlert('Could not save reaction',message)}
 }
 const open=()=>new Promise((ok,no)=>{const r=indexedDB.open('tracks',2);
  r.onupgradeneeded=()=>{const d=r.result;for(const [n,o] of [['meta',{keyPath:'id'}],['lists',{keyPath:'id'}],['blob']])if(!d.objectStoreNames.contains(n))d.createObjectStore(n,o)};
@@ -1309,6 +1309,11 @@ async function loadRemoteStashMetadata(){
  const folderMap=new Map(remoteFolders.map(f=>[f.id,f]));for(const f of keepFolders){const remote=folderMap.get(f.id);if(!remote)folderMap.set(f.id,f);else if(!f.cloud_synced&&!remote.is_shared)folderMap.set(f.id,{...remote,...f,owner_id:remote.owner_id||f.owner_id,cloud_synced:false})}
  await run(['lists'],'readwrite',l=>{for(const f of folderMap.values())l.put({...f,order:f.order??0})});
 }
+async function refreshSharedLibrary(){
+ if(!stashAuth||!stashAccountSession?.user)return;
+ try{await loadRemoteStashMetadata();await load()}
+ catch(error){setDriveStatus(`Shared playlists could not refresh: ${error.message||'please try again'}`);await stashAlert('Could not refresh shared playlists',error.message||'Please try again.')}
+}
 async function syncStashCloud(){
  if(cloudSyncing)return;clearTimeout(autoSyncTimer);autoSyncTimer=null;autoSyncPending=false;const user=stashAccountSession?.user;if(!stashAuth||!user||!stashAccountProfile)throw new Error('Sign in to a Stash profile first.');
  cloudSyncing=true;syncAccountUI();setDriveStatus('Connecting to shared Stash storage…');
@@ -1381,7 +1386,7 @@ $('#list').addEventListener('pointermove',e=>{if(!dragTrackId)return;const over=
 window.addEventListener('pointerup',e=>{if(!dragTrackId)return;const from=dragTrackId,over=document.elementFromPoint(e.clientX,e.clientY)?.closest('#list li[data-track-id]'),to=over?.dataset.trackId;$('#list').querySelectorAll('.dragging,.drop-target').forEach(x=>x.classList.remove('dragging','drop-target'));dragTrackId=null;if(to&&to!==from)moveTrackToPosition(from,to)});
 window.addEventListener('pointercancel',()=>{dragTrackId=null;$('#list').querySelectorAll('.dragging,.drop-target').forEach(x=>x.classList.remove('dragging','drop-target'))});
 $('#list').onclick=e=>{
- if(e.target.closest('#publicBrowseButton')){publicBrowse=!publicBrowse;render();return}
+ if(e.target.closest('#publicBrowseButton')){publicBrowse=!publicBrowse;render();if(publicBrowse)refreshSharedLibrary();return}
  const sortButton=e.target.closest('[data-blender-sort]');if(sortButton){blenderSort=sortButton.dataset.blenderSort;render();return}
  const voteButton=e.target.closest('[data-blender-vote]');if(voteButton){e.preventDefault();e.stopPropagation();voteBlenderTrack(voteButton.closest('li')?.dataset.trackId,Number(voteButton.dataset.blenderVote));return}
  if(e.target.closest('[data-drag-handle]'))return;
@@ -1392,7 +1397,7 @@ $('#list').onclick=e=>{
   if(a==='cov'){cid=id;$('#cf').click()}
   else if(a==='ren')renameList(id);
   else if(a==='del')delList(id);else if(a==='pub')toggleFolderPublic(id);else if(a==='mood')setFolderMoods(id);
-  else if(!edit){lv=id;render()}
+  else if(!edit){lv=id;render();if(id==='blender')refreshSharedLibrary()}
   return;
  }
  if(li.dataset.i===undefined)return;
