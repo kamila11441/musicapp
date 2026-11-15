@@ -663,6 +663,14 @@ header nav button.settings-control,.welcome-links button.settings-control{displa
 @media(hover:none){#publicBrowseButton:active .public-browse-flipper{transform:rotateY(180deg)}}
 #publicBrowseButton:focus-visible{outline:3px solid color-mix(in srgb,var(--acc) 55%,white);outline-offset:4px}
 @media(prefers-reduced-motion:reduce){#publicBrowseButton,#publicBrowseButton .public-browse-flipper{transition:none!important}}
+/* Keep the public-playlist action compact and centered in the mobile shelf. */
+#list li.public-browse-row{grid-column:auto;display:flex;flex:0 0 clamp(220px,72vw,260px);width:clamp(220px,72vw,260px);height:60px;min-height:60px;align-self:center;align-items:center;margin:0;padding:0;border:0;border-radius:0;overflow:visible}
+#publicBrowseButton{position:relative;display:block;box-sizing:border-box;width:100%;height:60px!important;min-height:60px!important;padding:0!important;overflow:visible;perspective:900px;border:0;border-radius:999px!important;background:transparent!important;color:var(--bg)!important;text-align:center;box-shadow:0 12px 26px -18px color-mix(in srgb,var(--acc) 48%,transparent)!important}
+#publicBrowseButton .public-browse-flipper{position:relative;display:block;width:100%;height:60px;min-height:60px;transform-style:preserve-3d;transition:transform .68s cubic-bezier(.2,.75,.25,1);font:650 12px/1.2 var(--sans);color:var(--bg);opacity:1}
+#publicBrowseButton .public-browse-face{position:absolute;inset:0;display:block;padding:0;border:1px solid color-mix(in srgb,var(--acc) 35%,rgba(255,255,255,.14));border-radius:999px;background:linear-gradient(135deg,color-mix(in srgb,var(--fg) 96%,var(--accent-deep)),var(--fg));color:var(--bg);font:inherit;opacity:1;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+#publicBrowseButton .public-browse-face b{position:absolute;inset:0;display:grid;place-items:center;padding:0 40px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:inherit;text-align:center}
+#publicBrowseButton .public-browse-face i{position:absolute;top:50%;right:14px;display:grid;width:24px;height:24px;place-items:center;transform:translateY(-50%);border:1px solid rgba(255,255,255,.18);border-radius:50%;background:rgba(255,255,255,.1);font-size:14px;font-style:normal;line-height:1}
+#publicBrowseButton .public-browse-face.back{justify-content:initial;transform:rotateY(180deg);background:linear-gradient(135deg,var(--accent-deep),color-mix(in srgb,var(--acc) 72%,var(--fg)));color:#fff}
 </style>
 </head>
 <body>
@@ -1168,8 +1176,9 @@ async function play(t,l,preserveQueue=false){
  if(!au.getAttribute('src')){au.src=SILENT;au.play().catch(()=>{})} // unlocks audio inside the tap
  pl=l;pid=t.id;render();
  let b=await run(['blob'],'readonly',s=>s.get(t.id));
- if(!b&&stashAccountSession&&(t.shared_media_ref||t.media_ref)){try{b=await downloadDriveFile(t.id,l);await run(['blob'],'readwrite',s=>s.put(b,t.id))}catch(error){setDriveStatus(error.message)}}
- if(token!==playToken||!b)return;
+ if(!b&&stashAccountSession&&(t.shared_media_ref||t.media_ref)){try{b=await downloadStashAudio(t.id,l);await run(['blob'],'readwrite',s=>s.put(b,t.id))}catch(error){setDriveStatus(error.message||'Could not download this track from cloud storage.');if(token===playToken)await stashAlert('Could not load track',error.message||'The audio could not be downloaded.')}}
+ if(token!==playToken)return;
+ if(!b){await stashAlert('Track audio is not on this device',stashAccountSession?'This track has no working cloud file reference yet. Sync it from the device that has the original audio.':'Sign in to download this track from cloud storage.');return}
  if(url)URL.revokeObjectURL(url);
  au.src=url=URL.createObjectURL(b);
  try{await au.play()}catch(x){}
@@ -1278,22 +1287,25 @@ async function stashDriveCall(action,payload={},attempt=0){
  if(error){let message=error.message||'Stash cloud request failed.',status=error.context?.status;try{const response=error.context?.clone?.()||error.context;const raw=await response?.text?.();if(raw){try{const detail=JSON.parse(raw);message=detail.error||detail.message||message}catch{message=raw.slice(0,400)}}}catch{}if(attempt<2&&(!status||status>=500)&&/load failed|failed to fetch|networkerror|fetch failed/i.test(`${message} ${error.message||''} ${error.context?.message||''}`)){await new Promise(resolve=>setTimeout(resolve,500*(attempt+1)));return stashDriveCall(action,payload,attempt+1)}if(status)message=`Stash cloud request failed (${status}): ${message}`;throw new Error(message)}
  if(data?.error)throw new Error(data.error);return data;
 }
-async function uploadDriveFile(blob,name,mimeType,trackId){
- const type=mimeType||blob.type||'application/octet-stream';let uploaded;
+async function uploadR2File(blob,mimeType,trackId){
+ const type=mimeType||blob.type||'application/octet-stream';let status=await stashDriveCall('begin-r2-upload',{trackId,mimeType:type,byteSize:blob.size});
+ if(status.uploaded)return status;
  try{
-  const response=await fetch(`${STASH_SUPABASE_URL}/functions/v1/stash-drive?action=upload-track`,{method:'POST',headers:{Authorization:`Bearer ${stashAccountSession.access_token}`,apikey:STASH_SUPABASE_PUBLISHABLE_KEY,'Content-Type':type,'x-stash-track-id':trackId,'x-stash-file-name':encodeURIComponent(name),'x-stash-byte-size':String(blob.size)},body:blob});
-  if(!response.ok){let message=`Stash audio upload failed (${response.status}).`;try{message=(await response.json()).error||message}catch{}throw new Error(message)}
-  return await response.json();
+  const response=await fetch(status.uploadUrl,{method:'PUT',headers:{'Content-Type':type},body:blob});
+  if(!response.ok)throw new Error(`R2 upload failed (${response.status}).`);
  }catch(error){
-  // The server may have completed the Drive upload before a connection failed.
-  try{uploaded=await stashDriveCall('track-status',{trackId,name,byteSize:blob.size})}catch{}
-  if(uploaded?.uploaded)return uploaded;
+  // Deterministic object keys make a retry safe even if R2 accepted the PUT
+  // but the browser lost its response.
+  try{status=await stashDriveCall('r2-track-status',{trackId});if(status.uploaded)return status}catch{}
   throw error;
  }
+ return await stashDriveCall('complete-r2-upload',{trackId});
 }
-async function downloadDriveFile(trackId,folderId){
+async function downloadStashAudio(trackId,folderId){
  if(!stashAuth||!stashAccountSession?.access_token)throw new Error('Sign in to Stash to download cloud audio.');
- const query=new URLSearchParams({action:'download',trackId});if(folderId)query.set('folderId',folderId);
+ // Let the server authorize against any accessible Blender/public membership.
+ // A track's primary playlist can be private even when it is shared elsewhere.
+ const query=new URLSearchParams({action:'download',trackId});
  const response=await fetch(`${STASH_SUPABASE_URL}/functions/v1/stash-drive?${query}`,{headers:{Authorization:`Bearer ${stashAccountSession.access_token}`,apikey:STASH_SUPABASE_PUBLISHABLE_KEY}});
  if(!response.ok){let message=`Could not download this track (${response.status}).`;try{message=(await response.json()).error||message}catch(x){}throw new Error(message)}
  return response.blob();
@@ -1339,7 +1351,7 @@ async function loadRemoteStashMetadata(){
   const sharedFolder=track.folders?.includes('blender')?'blender':track.folders?.find(id=>folderById.get(id)?.visibility==='public')||'';
   try{
    setDriveStatus(`Downloading track ${i+1} of ${pullCandidates.length}: ${track.name||'Untitled'}…`);
-   const audio=await downloadDriveFile(track.id,track.owner_id===userId?'':sharedFolder);
+   const audio=await downloadStashAudio(track.id,track.owner_id===userId?'':sharedFolder);
    await run(['blob'],'readwrite',store=>store.put(audio,track.id));pulled++;
   }catch(error){pullFailures.push(`${track.name||'Untitled'}: ${error.message||'download failed'}`)}
  }
@@ -1373,22 +1385,25 @@ async function syncStashCloud(){
  for(let index=0;index<ownTracks.length;index++){
    const t=ownTracks[index];let stage='reading local audio';setDriveStatus(`Syncing track ${index+1} of ${ownTracks.length}: ${t.name||'Untitled'}…`);
    try{
-    const [blob,coverBlob]=await Promise.all([run(['blob'],'readonly',b=>b.get(t.id)),run(['blob'],'readonly',b=>b.get('a:'+t.id))]);
+    const [storedAudio,coverBlob]=await Promise.all([run(['blob'],'readonly',b=>b.get(t.id)),run(['blob'],'readonly',b=>b.get('a:'+t.id))]);let blob=storedAudio;
     const folderIds=[...new Set((Array.isArray(t.folders)&&t.folders.length?t.folders:(t.list?[t.list]:[])).filter(Boolean))],cover_data=coverBlob?await blobToDataUrl(coverBlob):(t.cover_data||null);
-    stage='saving track details';const trackRow={id:t.id,owner_id:userId,name:t.name||'Untitled',author:t.author||'',file_name:t.file_name||`${t.name||'track'}.audio`,mime_type:t.mime_type||blob?.type||'application/octet-stream',byte_size:t.byte_size||blob?.size||0,duration_seconds:t.duration_seconds||null,lyrics:t.lyrics||null,sort_order:Number(t.order)||0,primary_folder_id:t.list||folderIds[0]||'',cover_data,updated_at:new Date().toISOString()};
+    stage='saving track details';const trackRow={id:t.id,owner_id:userId,name:t.name||'Untitled',author:t.author||'',file_name:t.file_name||`${t.name||'track'}.audio`,mime_type:t.mime_type||blob?.type||'application/octet-stream',byte_size:blob?.size||t.byte_size||0,duration_seconds:t.duration_seconds||null,lyrics:t.lyrics||null,sort_order:Number(t.order)||0,primary_folder_id:t.list||folderIds[0]||'',cover_data,updated_at:new Date().toISOString()};
     const {error:trackError}=await stashAuth.from('stash_tracks').upsert(trackRow,{onConflict:'id'});if(trackError)throw trackError;
-    const audioFileName=`${t.name||'Track'}${t.file_name&&/\.[^./]+$/.test(t.file_name)?t.file_name.match(/\.[^./]+$/)[0]:'.audio'}`;stage='checking Drive for an existing file';let fileInfo=null;const status=await stashDriveCall('track-status',{trackId:t.id,name:audioFileName,byteSize:blob?.size||t.byte_size||0});
-    if(status.uploaded){fileInfo={fileId:status.fileId};audioReadyCount++}
-    else if(blob){stage='uploading audio to Drive';fileInfo=await uploadDriveFile(blob,audioFileName,trackRow.mime_type,t.id);audioReadyCount++}
-    else throw new Error(`“${t.name||'Untitled'}” has no audio on this device or in shared Stash storage. Re-import the audio file, then sync again.`);
-    stage='sharing the track with its playlists';const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});if(folderIds.includes('blender')&&(!sharing.sharedFileId||!sharing.shareFolderIds?.includes('blender')))throw new Error('The track is still private in Drive; Blender did not confirm a shared copy.');const sharedMediaRef=sharing.sharedFileId||null;
+    stage='checking R2 for this track';let fileInfo=null;const status=await stashDriveCall('r2-track-status',{trackId:t.id});
+    if(status.uploaded){fileInfo=status;audioReadyCount++}
+    else{
+     if(!blob&&status.legacyAvailable){stage='pulling this track from Drive for migration';blob=await downloadStashAudio(t.id,folderIds.find(id=>id==='blender')||folderIds[0]||'');await run(['blob'],'readwrite',store=>store.put(blob,t.id))}
+     if(blob){stage='uploading audio to R2';fileInfo=await uploadR2File(blob,trackRow.mime_type,t.id);audioReadyCount++}
+     else throw new Error(`“${t.name||'Untitled'}” has no local audio or saved Drive file to migrate. Re-import the audio file, then sync again.`);
+    }
+    stage='sharing the track with its playlists';const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});if(folderIds.includes('blender')&&(!sharing.sharedFileId||!sharing.shareFolderIds?.includes('blender')))throw new Error('R2 did not confirm the shared Blender track.');const sharedMediaRef=sharing.sharedFileId||null;
     stage='saving playlist membership';const {data:oldMemberships,error:oldMembershipError}=await stashAuth.from('stash_folder_tracks').select('folder_id').eq('track_id',t.id);if(oldMembershipError)throw oldMembershipError;
     for(const membership of oldMemberships||[])if(!folderIds.includes(membership.folder_id)){const {error}=await stashAuth.from('stash_folder_tracks').delete().eq('track_id',t.id).eq('folder_id',membership.folder_id);if(error)throw error;}
     for(const folderId of folderIds){const folderIsShared=folderId==='blender'||lists.find(f=>f.id===folderId)?.visibility==='public';const {error}=await stashAuth.from('stash_folder_tracks').upsert({folder_id:folderId,track_id:t.id,added_by:userId,shared_media_ref:folderIsShared?sharedMediaRef:null},{onConflict:'folder_id,track_id'});if(error)throw error;}
-    await run(['meta'],'readwrite',m=>m.put({...t,owner_id:userId,media_ref:fileInfo?.fileId||t.media_ref,media_provider:'google_drive',cloud_synced:true,updated_at:trackRow.updated_at,sort_order:trackRow.sort_order,primary_folder_id:trackRow.primary_folder_id,cover_data,shared_media_ref:sharedMediaRef,folders:folderIds,list:folderIds.includes(t.list)?t.list:(folderIds[0]||'')}));syncedCount++;
+    await run(['meta'],'readwrite',m=>m.put({...t,owner_id:userId,media_ref:fileInfo?.objectKey||t.media_ref,media_provider:'r2',cloud_synced:true,updated_at:trackRow.updated_at,sort_order:trackRow.sort_order,primary_folder_id:trackRow.primary_folder_id,cover_data,shared_media_ref:sharedMediaRef,folders:folderIds,list:folderIds.includes(t.list)?t.list:(folderIds[0]||'')}));syncedCount++;
    }catch(error){syncFailures.push(`${t.name||'Untitled'} (${stage}): ${error.message||'sync failed'}`)}
   }
-  let refreshError=null;try{await loadRemoteStashMetadata();await load()}catch(error){refreshError=error}if(syncFailures.length)throw new Error(`Drive audio ready for ${audioReadyCount} of ${ownTracks.length} tracks; ${syncedCount} fully synced. ${syncFailures.slice(0,3).join(' · ')}${syncFailures.length>3?` · and ${syncFailures.length-3} more`:''}${refreshError?` · Library refresh: ${refreshError.message||'failed'}`:''}`);if(refreshError){setDriveStatus(`Synced ${syncedCount} tracks. This device could not refresh its library: ${refreshError.message||'please reload'}`);return}setDriveStatus(`Synced ${syncedCount} tracks to private Stash storage. Blender copies are shared with everyone.`);
+  let refreshError=null;try{await loadRemoteStashMetadata();await load()}catch(error){refreshError=error}if(syncFailures.length)throw new Error(`R2 audio ready for ${audioReadyCount} of ${ownTracks.length} tracks; ${syncedCount} fully synced. ${syncFailures.slice(0,3).join(' · ')}${syncFailures.length>3?` · and ${syncFailures.length-3} more`:''}${refreshError?` · Library refresh: ${refreshError.message||'failed'}`:''}`);if(refreshError){setDriveStatus(`Synced ${syncedCount} tracks. This device could not refresh its library: ${refreshError.message||'please reload'}`);return}setDriveStatus(`Synced ${syncedCount} tracks to R2. Blender and public playlists reference the same audio object.`);
  }finally{cloudSyncing=false;syncAccountUI();autoSyncPending=false}
 }
 // Cloud writes are manual now; all former background sync triggers intentionally stop here.
