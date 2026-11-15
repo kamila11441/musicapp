@@ -652,6 +652,16 @@ header nav button.settings-control,.welcome-links button.settings-control{displa
 #dashboardPopup:has(#dashboardMoodPopup:not([hidden])) .mood-options .mood-chip[aria-pressed="true"]{border-color:rgba(255,255,255,.88);background:rgba(255,255,255,.88);color:#79465f;box-shadow:0 5px 16px -12px rgba(111,57,88,.5)}
 #dashboardPopup:has(#dashboardMoodPopup:not([hidden])) .mood-options .mood-chip.add{border-style:dashed;background:rgba(255,255,255,.32);color:#86556f}
 @media(prefers-reduced-motion:reduce){#dashboardPopup:not([hidden]),#moodTagSheet:not([hidden]),#stashDialogBackdrop:not([hidden]),#accountSheet:not([hidden]),#dashboardPopup:not([hidden]) .dashboard-popup-card,#moodTagSheet:not([hidden]) .mood-tag-card,#stashDialogBackdrop:not([hidden]) .stash-dialog,#accountSheet:not([hidden]) .account-card{animation:none!important}}
+/* Full-size, tactile flip interaction for the public-playlist browse button. */
+#publicBrowseButton{position:relative;isolation:isolate;overflow:visible;transform-style:preserve-3d;transition:transform .42s cubic-bezier(.2,.75,.25,1),box-shadow .35s ease}
+#publicBrowseButton::before,#publicBrowseButton::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none}
+#publicBrowseButton::before{z-index:1;background:linear-gradient(112deg,transparent 20%,rgba(255,255,255,.28) 45%,rgba(255,255,255,.05) 58%,transparent 76%);transform:translateX(-110%);transition:transform .7s cubic-bezier(.2,.75,.25,1)}
+#publicBrowseButton::after{z-index:0;background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 45%,transparent),color-mix(in srgb,var(--accent-cool) 36%,transparent));opacity:0;transform:translateZ(-1px);transition:opacity .35s ease,transform .42s cubic-bezier(.2,.75,.25,1)}
+#publicBrowseButton>*{position:relative;z-index:2}
+@media(hover:hover) and (pointer:fine){#publicBrowseButton:hover{transform:perspective(700px) rotateY(5deg) rotateX(-2deg) translateY(-3px);box-shadow:0 18px 32px -18px color-mix(in srgb,var(--acc) 48%,transparent)!important}#publicBrowseButton:hover::before{transform:translateX(110%)}#publicBrowseButton:hover::after{transform:translateZ(-1px);opacity:.24}}
+#publicBrowseButton:active{transform:perspective(700px) rotateY(-3deg) scale(.98)}#publicBrowseButton:active::after{opacity:.24}
+#publicBrowseButton:focus-visible{outline:3px solid color-mix(in srgb,var(--acc) 55%,white);outline-offset:4px}
+@media(prefers-reduced-motion:reduce){#publicBrowseButton,#publicBrowseButton::before,#publicBrowseButton::after{transition:none!important}}
 </style>
 </head>
 <body>
