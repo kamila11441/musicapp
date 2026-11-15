@@ -667,7 +667,7 @@ header nav button.settings-control,.welcome-links button.settings-control{displa
 <section id="accountSheet" hidden aria-label="Stash account">
  <div class="account-card" role="dialog" aria-modal="true" aria-labelledby="accountTitle">
   <div class="account-head"><div><span class="account-kicker">STASH / ACCOUNT</span><h2 id="accountTitle">Your music space.</h2></div><button id="accountClose" type="button" aria-label="Close account">×</button></div>
-  <p class="account-intro">Create a Stash profile or sign in. Your tracks sync to private playlists in Stash storage, separate from Our Words.</p>
+  <p class="account-intro">Create a Stash profile or sign in. Your tracks are stored in private Stash playlists, separate from Our Words. Use Sync library when you want to sync changes.</p>
   <div id="accountTabs" class="account-tabs" role="tablist" aria-label="Account action"><button id="accountLoginTab" type="button" class="active" aria-selected="true">Sign in</button><button id="accountSignupTab" type="button" aria-selected="false">Create profile</button></div>
   <form id="accountForm"><label id="accountNameField" class="account-field" hidden><span>Profile name</span><input id="accountName" type="text" autocomplete="nickname" maxlength="32" placeholder="Your name"></label><label class="account-field"><span>Email</span><input id="accountEmail" type="email" autocomplete="email" placeholder="you@example.com" required></label><label class="account-field"><span>Password</span><input id="accountPassword" type="password" autocomplete="current-password" placeholder="At least 8 characters" minlength="8" required></label><button id="accountSubmit" class="account-submit" type="submit">Sign in</button><p id="accountStatus" class="account-status" role="status" aria-live="polite"></p></form>
   <div id="accountProfileSetup" class="account-profile-setup" hidden><h3 class="profile-picker-title">Create a Stash profile</h3><label class="account-field"><span>Stash profile name</span><input id="stashDisplayName" type="text" autocomplete="nickname" maxlength="32" placeholder="Name shown in Stash"></label><button id="createStashProfile" class="account-submit" type="button">Create Stash profile</button></div>
@@ -772,6 +772,7 @@ $('#stashDialogBackdrop').addEventListener('click',e=>{if(e.target===$('#stashDi
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!$('#stashDialogBackdrop').hidden){e.preventDefault();e.stopPropagation();finishDialog(null)}});
 const fmt=s=>isFinite(s)?Math.floor(s/60)+':'+String(Math.floor(s%60)).padStart(2,'0'):'0:00';
 async function blobToDataUrl(blob){if(!blob)return null;return `data:${blob.type||'application/octet-stream'};base64,${toBase64(await blob.arrayBuffer())}`}
+async function sha256Blob(blob){if(!blob)return null;const digest=await crypto.subtle.digest('SHA-256',await blob.arrayBuffer());return [...new Uint8Array(digest)].map(byte=>byte.toString(16).padStart(2,'0')).join('')}
 function dataUrlToBlob(value){if(typeof value!=='string'||!value.startsWith('data:'))return null;const match=value.match(/^data:([^;,]*);base64,(.*)$/s);if(!match)return null;try{return new Blob([fromBase64(match[2])],{type:match[1]||'application/octet-stream'})}catch{return null}}
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2);
 const inList=l=>all.filter(t=>{const folders=Array.isArray(t.folders)?t.folders:(t.list?[t.list]:[]);return l===''?folders.length===0:folders.includes(l)}).sort((a,b)=>(a.order||0)-(b.order||0));
@@ -1255,7 +1256,7 @@ function syncAccountUI(){
  $('#accountForm').hidden=Boolean(user);$('#accountTabs').hidden=Boolean(user);$('#accountProfileSetup').hidden=!user||Boolean(stashAccountProfile);$('#accountSignedIn').hidden=!user;
  $('#accountEmailLabel').textContent=stashAccountProfile?.display_name||user?.email||'Signed in';
  $('#accountContinue').textContent=user&&stashAccountProfile?'Continue to your library':'Continue offline';$('#accountSubmit').disabled=!stashAuth;
- $('#settingsAccountStatus').textContent=user?`Stash profile: ${stashAccountProfile?.display_name||user.email||'signed in'}. Your library syncs automatically when connected.`:'Create or sign in to a Stash profile. Your library syncs automatically when connected.';
+ $('#settingsAccountStatus').textContent=user?`Stash profile: ${stashAccountProfile?.display_name||user.email||'signed in'}. Use Sync library to sync changes when you choose.`:'Create or sign in to a Stash profile. Use Sync library to sync changes when you choose.';
  $('#settingsAccountButton').textContent=user?'Account':'Sign in';$('#welcomeLogin').textContent=user?'Account':'Sign in';
  $('#drivePanel').hidden=!user||!stashAccountProfile;$('#driveState').textContent='Shared storage';$('#syncCloudButton').disabled=!user||!stashAccountProfile||cloudSyncing;
 }
@@ -1266,12 +1267,12 @@ async function stashDriveCall(action,payload={}){
  if(error){let message=error.message||'Stash cloud request failed.',status=error.context?.status;try{const response=error.context?.clone?.()||error.context;const raw=await response?.text?.();if(raw){try{const detail=JSON.parse(raw);message=detail.error||detail.message||message}catch{message=raw.slice(0,400)}}}catch{}if(status)message=`Stash cloud request failed (${status}): ${message}`;throw new Error(message)}
  if(data?.error)throw new Error(data.error);return data;
 }
-async function uploadDriveFile(blob,name,mimeType,trackId){
+async function uploadDriveFile(blob,name,mimeType,trackId,sha256){
  const type=mimeType||blob.type||'application/octet-stream';
- const session=await stashDriveCall('begin-upload',{trackId,name,mimeType:type,byteSize:blob.size});
+ const session=await stashDriveCall('begin-upload',{trackId,name,mimeType:type,byteSize:blob.size,sha256});
  const response=await fetch(session.uploadUrl,{method:session.method||'PUT',headers:{'Content-Type':type},body:blob});
  if(!response.ok)throw new Error(`Stash audio upload failed (${response.status}).`);
- const file=await response.json();return await stashDriveCall('complete-upload',{trackId,fileId:file.id});
+ const file=await response.json();return await stashDriveCall('complete-upload',{trackId,fileId:file.id,sha256});
 }
 async function downloadDriveFile(trackId,folderId){
  if(!stashAuth||!stashAccountSession?.access_token)throw new Error('Sign in to Stash to download cloud audio.');
@@ -1315,7 +1316,7 @@ async function refreshSharedLibrary(){
  catch(error){setDriveStatus(`Shared playlists could not refresh: ${error.message||'please try again'}`);await stashAlert('Could not refresh shared playlists',error.message||'Please try again.')}
 }
 async function syncStashCloud(){
- if(cloudSyncing)return;clearTimeout(autoSyncTimer);autoSyncTimer=null;autoSyncPending=false;const user=stashAccountSession?.user;if(!stashAuth||!user||!stashAccountProfile)throw new Error('Sign in to a Stash profile first.');
+ if(cloudSyncing)return;const user=stashAccountSession?.user;if(!stashAuth||!user||!stashAccountProfile)throw new Error('Sign in to a Stash profile first.');
  cloudSyncing=true;syncAccountUI();setDriveStatus('Connecting to shared Stash storage…');
  try{
   const userId=user.id;await stashDriveCall('storage-status');
@@ -1336,15 +1337,15 @@ async function syncStashCloud(){
  for(let index=0;index<ownTracks.length;index++){
    const t=ownTracks[index];setDriveStatus(`Syncing track ${index+1} of ${ownTracks.length}: ${t.name||'Untitled'}…`);
    try{
-    const [blob,coverBlob]=await Promise.all([run(['blob'],'readonly',b=>b.get(t.id)),run(['blob'],'readonly',b=>b.get('a:'+t.id))]);
+    const [blob,coverBlob]=await Promise.all([run(['blob'],'readonly',b=>b.get(t.id)),run(['blob'],'readonly',b=>b.get('a:'+t.id))]);const sha256=blob?await sha256Blob(blob):null;
     const folderIds=[...new Set((Array.isArray(t.folders)&&t.folders.length?t.folders:(t.list?[t.list]:[])).filter(Boolean))],cover_data=coverBlob?await blobToDataUrl(coverBlob):(t.cover_data||null);
     const trackRow={id:t.id,owner_id:userId,name:t.name||'Untitled',author:t.author||'',file_name:t.file_name||`${t.name||'track'}.audio`,mime_type:t.mime_type||blob?.type||'application/octet-stream',byte_size:t.byte_size||blob?.size||0,duration_seconds:t.duration_seconds||null,lyrics:t.lyrics||null,sort_order:Number(t.order)||0,primary_folder_id:t.list||folderIds[0]||'',cover_data,updated_at:new Date().toISOString()};
     const {error:trackError}=await stashAuth.from('stash_tracks').upsert(trackRow,{onConflict:'id'});if(trackError)throw trackError;
-    let fileInfo=null;const status=await stashDriveCall('track-status',{trackId:t.id});
+    let fileInfo=null;const status=await stashDriveCall('track-status',{trackId:t.id,sha256});
     if(status.uploaded)fileInfo={fileId:status.fileId};
-    else if(blob){const name=`${t.name||'Track'}${t.file_name&&/\.[^./]+$/.test(t.file_name)?t.file_name.match(/\.[^./]+$/)[0]:'.audio'}`;fileInfo=await uploadDriveFile(blob,name,trackRow.mime_type,t.id)}
+    else if(blob){const name=`${t.name||'Track'}${t.file_name&&/\.[^./]+$/.test(t.file_name)?t.file_name.match(/\.[^./]+$/)[0]:'.audio'}`;fileInfo=await uploadDriveFile(blob,name,trackRow.mime_type,t.id,sha256)}
     else throw new Error(`“${t.name||'Untitled'}” has no audio on this device or in shared Stash storage. Re-import the audio file, then sync again.`);
-    const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});const sharedMediaRef=sharing.sharedFileId||null;
+    const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds,sha256});const sharedMediaRef=sharing.sharedFileId||null;
     const {data:oldMemberships,error:oldMembershipError}=await stashAuth.from('stash_folder_tracks').select('folder_id').eq('track_id',t.id);if(oldMembershipError)throw oldMembershipError;
     for(const membership of oldMemberships||[])if(!folderIds.includes(membership.folder_id)){const {error}=await stashAuth.from('stash_folder_tracks').delete().eq('track_id',t.id).eq('folder_id',membership.folder_id);if(error)throw error;}
     for(const folderId of folderIds){const folderIsShared=folderId==='blender'||lists.find(f=>f.id===folderId)?.visibility==='public';const {error}=await stashAuth.from('stash_folder_tracks').upsert({folder_id:folderId,track_id:t.id,added_by:userId,shared_media_ref:folderIsShared?sharedMediaRef:null},{onConflict:'folder_id,track_id'});if(error)throw error;}
@@ -1352,9 +1353,10 @@ async function syncStashCloud(){
    }catch(error){syncFailures.push(`${t.name||'Untitled'}: ${error.message||'sync failed'}`)}
   }
   let refreshError=null;try{await loadRemoteStashMetadata();await load()}catch(error){refreshError=error}if(syncFailures.length)throw new Error(`Synced ${syncedCount} of ${ownTracks.length} tracks. ${syncFailures.slice(0,3).join(' · ')}${syncFailures.length>3?` · and ${syncFailures.length-3} more`:''}${refreshError?` · Library refresh: ${refreshError.message||'failed'}`:''}`);if(refreshError){setDriveStatus(`Synced ${syncedCount} tracks. This device could not refresh its library: ${refreshError.message||'please reload'}`);return}setDriveStatus(`Synced ${syncedCount} tracks to private Stash storage. Blender copies are shared with everyone.`);
- }finally{cloudSyncing=false;syncAccountUI();if(autoSyncPending){autoSyncPending=false;queueCloudSync(400)}}
+ }finally{cloudSyncing=false;syncAccountUI();autoSyncPending=false}
 }
-function queueCloudSync(delay=900){if(!db||!stashAuth||!stashAccountSession?.user||!stashAccountProfile)return;if(cloudSyncing){autoSyncPending=true;return}clearTimeout(autoSyncTimer);autoSyncTimer=setTimeout(async()=>{autoSyncTimer=null;try{await syncStashCloud()}catch(error){setDriveStatus(`Auto-sync needs attention: ${error.message||'cloud sync failed'}`)}},delay)}
+// Cloud writes are manual now; all former background sync triggers intentionally stop here.
+function queueCloudSync(){clearTimeout(autoSyncTimer);autoSyncTimer=null;autoSyncPending=false}
 $('#syncCloudButton').onclick=async()=>{try{await syncStashCloud()}catch(error){setDriveStatus(error.message||'Cloud sync failed.')}};
 function openAccount(){accountReturnFocus=document.activeElement;syncAccountUI();$('#accountSheet').hidden=false;$('#accountClose').focus();if(stashAccountSession)loadStashProfile()}
 function closeAccount(){ $('#accountSheet').hidden=true;(accountReturnFocus&&!accountReturnFocus.hidden?accountReturnFocus:$('#welcomeLogin')).focus();accountReturnFocus=null}
