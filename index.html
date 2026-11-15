@@ -607,6 +607,7 @@ header nav button.settings-control,.welcome-links button.settings-control{displa
 
 
 .stash-dialog-option:has(input:disabled){opacity:.45}.stash-dialog-actions button:disabled{opacity:.4;cursor:default}
+.dock{position:relative;inset:auto;left:auto;bottom:auto;z-index:2;align-self:center;flex:none;width:max-content;max-width:calc(100% - 28px);margin:0 auto 8px;transform:none}.dock button,.dock label{flex:none}.dock #ad{width:46px}body.playing>.dock{transform:translateY(24px)}
 </style>
 </head>
 <body data-theme="mono" data-accent="welcome">
@@ -670,6 +671,7 @@ header nav button.settings-control,.welcome-links button.settings-control{displa
 <section id="moodTagSheet" class="dashboard-popup mood-tag-popup" hidden aria-label="Folder mood tags">
  <div class="mood-tag-card" role="dialog" aria-modal="true" aria-labelledby="moodTagTitle"><div class="dashboard-popup-head"><div><span class="dashboard-kicker">FOLDER / MOODS</span><h2 id="moodTagTitle">Tag this folder</h2></div><button id="moodTagClose" type="button" aria-label="Close mood tags">×</button></div><p class="mood-tag-copy">Choose moods already used in Stash, or add a new one.</p><div id="moodTagPills" class="mood-tag-pills" aria-label="Mood tags"></div><div class="mood-tag-actions"><button id="moodTagCancel" type="button" class="mood-tag-cancel">Cancel</button><button id="moodTagSave" type="button" class="mood-tag-save">Save moods</button></div></div>
 </section>
+<nav class="dock" aria-label="Library actions"><button id="ed">Edit</button><button id="nw">New</button><label id="ad" role="button" tabindex="0" aria-label="Add audio tracks"><input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></nav>
 <ul id="list" aria-label="Your folders"></ul>
 <div id="editActionPopup" class="edit-action-popup" role="menu" aria-label="Edit actions" hidden></div>
 <section id="stashDialogBackdrop" class="stash-dialog-backdrop" hidden><div class="stash-dialog" role="dialog" aria-modal="true" aria-labelledby="stashDialogTitle"><h2 id="stashDialogTitle"></h2><p id="stashDialogCopy" class="stash-dialog-copy" hidden></p><div id="stashDialogBody"></div><div class="stash-dialog-actions"><button id="stashDialogCancel" type="button">Cancel</button><button id="stashDialogConfirm" class="primary" type="button">Save</button></div></div></section>
@@ -707,7 +709,6 @@ header nav button.settings-control,.welcome-links button.settings-control{displa
 <section id="lyricsEditor" hidden>
  <div class="settings-card lyrics-edit-card" role="dialog" aria-modal="true" aria-labelledby="lyricsEditorTitle"><div class="settings-head"><h2 id="lyricsEditorTitle">Add lyrics</h2><button id="lyricsEditorClose" type="button" aria-label="Close lyrics editor">×</button></div><textarea id="lyricsInput" placeholder="Paste or type lyrics here" aria-label="Lyrics"></textarea><p class="lyrics-hint">For synced tracking, start each line with a timestamp, like [00:12].</p><div class="lyrics-edit-actions"><button id="lyricsCancel" type="button">Cancel</button><button id="lyricsSave" class="primary" type="button">Save lyrics</button></div></div>
 </section>
-<nav class="dock" aria-label="Library actions"><button id="ed">Edit</button><button id="nw">New</button><label id="ad" role="button" tabindex="0" aria-label="Add audio tracks"><input id="f" type="file" accept="audio/*,.mp3,.m4a,.m4b,.mp4,.aac,.wav,.aif,.aiff,.caf,.flac" multiple hidden></label></nav>
 <audio id="au" preload="auto"></audio>
 <script>
 const $=s=>document.querySelector(s),au=$('#au');
@@ -1224,7 +1225,7 @@ function setDriveStatus(message){$('#driveStatus').textContent=message}
 async function stashDriveCall(action,payload={}){
  if(!stashAuth||!stashAccountSession?.user)throw new Error('Sign in to Stash first.');
  const {data,error}=await stashAuth.functions.invoke('stash-drive',{body:{action,...payload}});
- if(error){let message=error.message||'Stash cloud request failed.';try{const detail=await error.context?.json();if(detail?.error)message=detail.error}catch(x){}throw new Error(message)}
+ if(error){let message=error.message||'Stash cloud request failed.',status=error.context?.status;try{const response=error.context?.clone?.()||error.context;const raw=await response?.text?.();if(raw){try{const detail=JSON.parse(raw);message=detail.error||detail.message||message}catch{message=raw.slice(0,400)}}}catch{}if(status)message=`Stash cloud request failed (${status}): ${message}`;throw new Error(message)}
  if(data?.error)throw new Error(data.error);return data;
 }
 async function uploadDriveFile(blob,name,mimeType,trackId){
