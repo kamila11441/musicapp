@@ -652,16 +652,17 @@ header nav button.settings-control,.welcome-links button.settings-control{displa
 #dashboardPopup:has(#dashboardMoodPopup:not([hidden])) .mood-options .mood-chip[aria-pressed="true"]{border-color:rgba(255,255,255,.88);background:rgba(255,255,255,.88);color:#79465f;box-shadow:0 5px 16px -12px rgba(111,57,88,.5)}
 #dashboardPopup:has(#dashboardMoodPopup:not([hidden])) .mood-options .mood-chip.add{border-style:dashed;background:rgba(255,255,255,.32);color:#86556f}
 @media(prefers-reduced-motion:reduce){#dashboardPopup:not([hidden]),#moodTagSheet:not([hidden]),#stashDialogBackdrop:not([hidden]),#accountSheet:not([hidden]),#dashboardPopup:not([hidden]) .dashboard-popup-card,#moodTagSheet:not([hidden]) .mood-tag-card,#stashDialogBackdrop:not([hidden]) .stash-dialog,#accountSheet:not([hidden]) .account-card{animation:none!important}}
-/* Full-size, tactile flip interaction for the public-playlist browse button. */
-#publicBrowseButton{position:relative;isolation:isolate;overflow:visible;transform-style:preserve-3d;transition:transform .42s cubic-bezier(.2,.75,.25,1),box-shadow .35s ease}
-#publicBrowseButton::before,#publicBrowseButton::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none}
-#publicBrowseButton::before{z-index:1;background:linear-gradient(112deg,transparent 20%,rgba(255,255,255,.28) 45%,rgba(255,255,255,.05) 58%,transparent 76%);transform:translateX(-110%);transition:transform .7s cubic-bezier(.2,.75,.25,1)}
-#publicBrowseButton::after{z-index:0;background:linear-gradient(135deg,color-mix(in srgb,var(--acc) 45%,transparent),color-mix(in srgb,var(--accent-cool) 36%,transparent));opacity:0;transform:translateZ(-1px);transition:opacity .35s ease,transform .42s cubic-bezier(.2,.75,.25,1)}
-#publicBrowseButton>*{position:relative;z-index:2}
-@media(hover:hover) and (pointer:fine){#publicBrowseButton:hover{transform:perspective(700px) rotateY(5deg) rotateX(-2deg) translateY(-3px);box-shadow:0 18px 32px -18px color-mix(in srgb,var(--acc) 48%,transparent)!important}#publicBrowseButton:hover::before{transform:translateX(110%)}#publicBrowseButton:hover::after{transform:translateZ(-1px);opacity:.24}}
-#publicBrowseButton:active{transform:perspective(700px) rotateY(-3deg) scale(.98)}#publicBrowseButton:active::after{opacity:.24}
+/* Two-sided card flip for public playlist browsing. */
+#publicBrowseButton{height:60px!important;min-height:60px!important;padding:0!important;overflow:visible;perspective:900px;transform:none;transition:transform .2s ease,box-shadow .25s ease}
+#publicBrowseButton .public-browse-flipper{position:relative;display:block;width:100%;height:100%;min-height:60px;transform-style:preserve-3d;transition:transform .72s cubic-bezier(.2,.75,.25,1);color:var(--bg);font-size:13px;font-weight:650;opacity:1}
+#publicBrowseButton .public-browse-face{position:absolute;inset:0;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 18px;border:1px solid color-mix(in srgb,var(--acc) 35%,rgba(255,255,255,.14));border-radius:inherit;background:linear-gradient(135deg,color-mix(in srgb,var(--fg) 96%,var(--accent-deep)),var(--fg));color:var(--bg);font:inherit;opacity:1;backface-visibility:hidden;-webkit-backface-visibility:hidden;box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
+#publicBrowseButton .public-browse-face.back{justify-content:space-between;transform:rotateY(180deg);background:linear-gradient(135deg,var(--accent-deep),color-mix(in srgb,var(--acc) 72%,var(--fg)));color:#fff}
+#publicBrowseButton .public-browse-face i{font-size:17px;font-style:normal;line-height:1}
+@media(hover:hover) and (pointer:fine){#publicBrowseButton:hover{transform:translateY(-2px);box-shadow:0 16px 28px -18px color-mix(in srgb,var(--acc) 48%,transparent)!important}#publicBrowseButton:hover .public-browse-flipper,#publicBrowseButton:focus-visible .public-browse-flipper{transform:rotateY(180deg)}}
+#publicBrowseButton:active{transform:scale(.98)}
+@media(hover:none){#publicBrowseButton:active .public-browse-flipper{transform:rotateY(180deg)}}
 #publicBrowseButton:focus-visible{outline:3px solid color-mix(in srgb,var(--acc) 55%,white);outline-offset:4px}
-@media(prefers-reduced-motion:reduce){#publicBrowseButton,#publicBrowseButton::before,#publicBrowseButton::after{transition:none!important}}
+@media(prefers-reduced-motion:reduce){#publicBrowseButton,#publicBrowseButton .public-browse-flipper{transition:none!important}}
 </style>
 </head>
 <body>
@@ -897,7 +898,7 @@ function render(){
  if(home){
   const userId=stashAccountSession?.user?.id;const browsingOthers=publicBrowse&&Boolean(userId);const blender=lists.filter(f=>f.id==='blender'||f.is_shared);const visibleFolders=browsingOthers?lists.filter(f=>f.id!=='blender'&&!f.is_shared&&f.visibility==='public'&&f.owner_id!==userId):lists.filter(f=>f.id!=='blender'&&!f.is_shared&&(!f.owner_id||f.owner_id===userId));const rows=[...blender,...visibleFolders,...(!browsingOthers&&inList('').length?[{id:'',name:'Unsorted tracks'}]:[])];if(userId)rows.push({publicBrowseAction:true});
   $('#list').innerHTML=rows.map((l,i)=>{
-   if(l.publicBrowseAction)return `<li class="public-browse-row"><button id="publicBrowseButton" type="button">${browsingOthers?'‹ Back to my playlists':'View other public playlists'} <span aria-hidden="true">${browsingOthers?'':'↗'}</span></button></li>`;
+   if(l.publicBrowseAction)return `<li class="public-browse-row"><button id="publicBrowseButton" type="button" aria-label="${browsingOthers?'Back to my playlists':'View other public playlists'}"><span class="public-browse-flipper" aria-hidden="true"><span class="public-browse-face front"><b>${browsingOthers?'‹ Back to my playlists':'View other public playlists'}</b><i>↗</i></span><span class="public-browse-face back"><b>${browsingOthers?'Return to my playlists':'Discover public playlists'}</b><i>↗</i></span></span></button></li>`;
    const tracks=inList(l.id),playlistCover=cov[l.id]||'',trackCovers=tracks.map(t=>trackCov[t.id]||''),previewCovers=playlistCover?[playlistCover,...trackCovers.slice(0,2)]:trackCovers.slice(0,3);
    const coverLayer=(layer,src)=>`<span class="folder-cover folder-cover-${layer}"${layer!==1?' aria-hidden="true"':''}>${src?`<img src="${src}" alt="">`:''}</span>`;
    const coverPreview=`<span class="cv folder-cv">${coverLayer(3,previewCovers[2]||'')}${coverLayer(2,previewCovers[1]||'')}${coverLayer(1,previewCovers[0]||'')}</span>`;
@@ -1131,7 +1132,7 @@ async function addTrackToFolder(t){
  const currentFolders=Array.isArray(t.folders)&&t.folders.length?t.folders:(t.list?[t.list]:[]);
  const selected=await stashDialog({title:'Add to playlists',copy:`Choose any of your playlists for “${t.name}”. Blender is shared with everyone. Existing copies stay selected.`,kind:'options',multiple:true,options:choices.map(f=>({id:f.id,name:f.id==='blender'?'Blender · shared with everyone':f.name,selected:currentFolders.includes(f.id)})),confirm:'Save playlists'});if(selected===null)return;
  const folders=[...new Set(selected)],list=folders.includes(t.list)?t.list:(folders[0]||'');
- await run(['meta'],'readwrite',m=>m.put({...t,folders,list,order:t.order||Date.now(),cloud_synced:false,updated_at:new Date().toISOString()}));await load();if(stashAccountSession?.user&&stashAccountProfile)queueCloudSync();
+ await run(['meta'],'readwrite',m=>m.put({...t,folders,list,order:t.order||Date.now(),cloud_synced:false,updated_at:new Date().toISOString()}));await load();if(folders.includes('blender'))setDriveStatus(stashAccountSession?.user&&stashAccountProfile?'Added to Blender on this device. Tap Sync library to share it with everyone.':'Added to Blender on this device. Sign in, then tap Sync library to share it with everyone.');if(stashAccountSession?.user&&stashAccountProfile)queueCloudSync();
 }
 async function moveTrackToPosition(fromId,toId){
  const ordered=inList(lv),from=ordered.findIndex(t=>t.id===fromId),to=ordered.findIndex(t=>t.id===toId);
@@ -1278,18 +1279,15 @@ async function stashDriveCall(action,payload={},attempt=0){
  if(data?.error)throw new Error(data.error);return data;
 }
 async function uploadDriveFile(blob,name,mimeType,trackId){
- const type=mimeType||blob.type||'application/octet-stream';
- const session=await stashDriveCall('begin-upload',{trackId,name,mimeType:type,byteSize:blob.size});
- let recovered;
+ const type=mimeType||blob.type||'application/octet-stream';let uploaded;
  try{
-  const response=await fetch(session.uploadUrl,{method:session.method||'PUT',headers:{'Content-Type':type},body:blob});
-  if(!response.ok)throw new Error(`Stash audio upload failed (${response.status}).`);
-  const file=await response.json();return await stashDriveCall('complete-upload',{trackId,fileId:file.id});
+  const response=await fetch(`${STASH_SUPABASE_URL}/functions/v1/stash-drive?action=upload-track`,{method:'POST',headers:{Authorization:`Bearer ${stashAccountSession.access_token}`,apikey:STASH_SUPABASE_PUBLISHABLE_KEY,'Content-Type':type,'x-stash-track-id':trackId,'x-stash-file-name':encodeURIComponent(name),'x-stash-byte-size':String(blob.size)},body:blob});
+  if(!response.ok){let message=`Stash audio upload failed (${response.status}).`;try{message=(await response.json()).error||message}catch{}throw new Error(message)}
+  return await response.json();
  }catch(error){
-  // A lost response can happen after Drive accepted the upload. Check the
-  // track marker before reporting failure or starting another upload.
-  try{recovered=await stashDriveCall('track-status',{trackId})}catch{}
-  if(recovered?.uploaded)return recovered;
+  // The server may have completed the Drive upload before a connection failed.
+  try{uploaded=await stashDriveCall('track-status',{trackId,name,byteSize:blob.size})}catch{}
+  if(uploaded?.uploaded)return uploaded;
   throw error;
  }
 }
@@ -1316,7 +1314,7 @@ async function loadRemoteStashMetadata(){
   const ms=membershipsByTrack.get(t.id)||[],own=t.owner_id===userId,privateFile=own?files.get(t.id):null;
   const shared=ms.find(m=>m.folder_id==='blender');
   const publicMemberships=ms.filter(m=>folderById.get(m.folder_id)?.visibility==='public');const publicOrShared=Boolean(shared||publicMemberships.length);
-  const local=localTrackById.get(t.id),localFolders=Array.isArray(local?.folders)&&local.folders.length?local.folders:(local?.list?[local.list]:[]),localUpdated=Date.parse(local?.updated_at||'')||0,remoteUpdated=Date.parse(t.updated_at||'')||0,preferLocal=Boolean(local&&(!local.owner_id||local.owner_id===userId)&&(!local.cloud_synced||(!ms.length&&localFolders.length&&(!localUpdated||localUpdated>remoteUpdated)))),folders=preferLocal?[...new Set([...ms.map(m=>m.folder_id),...localFolders])]:ms.map(m=>m.folder_id);
+  const local=localTrackById.get(t.id),localFolders=Array.isArray(local?.folders)&&local.folders.length?local.folders:(local?.list?[local.list]:[]),remoteFolders=ms.map(m=>m.folder_id),savedPrimary=t.primary_folder_id&&folderById.has(t.primary_folder_id)?[t.primary_folder_id]:[],localUpdated=Date.parse(local?.updated_at||'')||0,remoteUpdated=Date.parse(t.updated_at||'')||0,preferLocal=Boolean(local&&(!local.owner_id||local.owner_id===userId)&&(!local.cloud_synced||(!ms.length&&localFolders.length&&(!localUpdated||localUpdated>remoteUpdated)))),folders=preferLocal?[...new Set([...remoteFolders,...localFolders])]:remoteFolders.length?remoteFolders:savedPrimary;
   return {...t,owner_id:t.owner_id,folders,list:preferLocal&&local?.list?local.list:(t.primary_folder_id||ms[0]?.folder_id||''),order:preferLocal?(Number(local?.order)||Number(t.sort_order)||0):(Number(t.sort_order)||0),blender_added_at:shared?.created_at||local?.blender_added_at||t.updated_at,cover_data:t.cover_data||local?.cover_data||null,shared_visible:publicOrShared,media_ref:privateFile?.media_ref||null,media_provider:privateFile?.media_provider||null,shared_media_ref:shared?.shared_media_ref||publicMemberships[0]?.shared_media_ref||null,shared_media_refs:Object.fromEntries(ms.filter(m=>m.shared_media_ref).map(m=>[m.folder_id,m.shared_media_ref])),cloud_synced:!preferLocal};
  });
  const keep=localTracks.filter(t=>!t.owner_id||t.owner_id===userId);
@@ -1328,6 +1326,25 @@ async function loadRemoteStashMetadata(){
  const keepFolders=oldFolders.filter(f=>!f.owner_id||f.owner_id===userId);
  const folderMap=new Map(remoteFolders.map(f=>[f.id,f]));for(const f of keepFolders){const remote=folderMap.get(f.id);if(!remote)folderMap.set(f.id,f);else if(!f.cloud_synced&&!remote.is_shared)folderMap.set(f.id,{...remote,...f,owner_id:remote.owner_id||f.owner_id,cloud_synced:false})}
  await run(['lists'],'readwrite',l=>{for(const f of folderMap.values())l.put({...f,order:f.order??0})});
+ // Metadata alone is not enough on a new device: pull missing audio from
+ // Drive so playlists are available locally, while keeping existing local
+ // audio untouched. Public/Blender tracks use their shared membership folder;
+ // the owner's own tracks use the private Drive file recorded in the manifest.
+ const pullCandidates=remoteTracks.filter(t=>t.media_ref||t.shared_media_ref);
+ let pulled=0;const pullFailures=[];
+ for(let i=0;i<pullCandidates.length;i++){
+  const track=pullCandidates[i];
+  const existing=await run(['blob'],'readonly',store=>store.get(track.id));
+  if(existing)continue;
+  const sharedFolder=track.folders?.includes('blender')?'blender':track.folders?.find(id=>folderById.get(id)?.visibility==='public')||'';
+  try{
+   setDriveStatus(`Downloading track ${i+1} of ${pullCandidates.length}: ${track.name||'Untitled'}…`);
+   const audio=await downloadDriveFile(track.id,track.owner_id===userId?'':sharedFolder);
+   await run(['blob'],'readwrite',store=>store.put(audio,track.id));pulled++;
+  }catch(error){pullFailures.push(`${track.name||'Untitled'}: ${error.message||'download failed'}`)}
+ }
+ if(pullFailures.length)setDriveStatus(`Downloaded ${pulled} tracks; ${pullFailures.length} could not be pulled. ${pullFailures.slice(0,2).join(' · ')}`);
+ else if(pulled)setDriveStatus(`Downloaded ${pulled} tracks from Drive to this device.`);
 }
 async function refreshSharedLibrary(){
  if(!stashAuth||!stashAccountSession?.user)return;
@@ -1360,11 +1377,11 @@ async function syncStashCloud(){
     const folderIds=[...new Set((Array.isArray(t.folders)&&t.folders.length?t.folders:(t.list?[t.list]:[])).filter(Boolean))],cover_data=coverBlob?await blobToDataUrl(coverBlob):(t.cover_data||null);
     stage='saving track details';const trackRow={id:t.id,owner_id:userId,name:t.name||'Untitled',author:t.author||'',file_name:t.file_name||`${t.name||'track'}.audio`,mime_type:t.mime_type||blob?.type||'application/octet-stream',byte_size:t.byte_size||blob?.size||0,duration_seconds:t.duration_seconds||null,lyrics:t.lyrics||null,sort_order:Number(t.order)||0,primary_folder_id:t.list||folderIds[0]||'',cover_data,updated_at:new Date().toISOString()};
     const {error:trackError}=await stashAuth.from('stash_tracks').upsert(trackRow,{onConflict:'id'});if(trackError)throw trackError;
-    stage='checking Drive for an existing file';let fileInfo=null;const status=await stashDriveCall('track-status',{trackId:t.id});
+    const audioFileName=`${t.name||'Track'}${t.file_name&&/\.[^./]+$/.test(t.file_name)?t.file_name.match(/\.[^./]+$/)[0]:'.audio'}`;stage='checking Drive for an existing file';let fileInfo=null;const status=await stashDriveCall('track-status',{trackId:t.id,name:audioFileName,byteSize:blob?.size||t.byte_size||0});
     if(status.uploaded){fileInfo={fileId:status.fileId};audioReadyCount++}
-    else if(blob){stage='uploading audio to Drive';const name=`${t.name||'Track'}${t.file_name&&/\.[^./]+$/.test(t.file_name)?t.file_name.match(/\.[^./]+$/)[0]:'.audio'}`;fileInfo=await uploadDriveFile(blob,name,trackRow.mime_type,t.id);audioReadyCount++}
+    else if(blob){stage='uploading audio to Drive';fileInfo=await uploadDriveFile(blob,audioFileName,trackRow.mime_type,t.id);audioReadyCount++}
     else throw new Error(`“${t.name||'Untitled'}” has no audio on this device or in shared Stash storage. Re-import the audio file, then sync again.`);
-    stage='sharing the track with its playlists';const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});const sharedMediaRef=sharing.sharedFileId||null;
+    stage='sharing the track with its playlists';const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});if(folderIds.includes('blender')&&(!sharing.sharedFileId||!sharing.shareFolderIds?.includes('blender')))throw new Error('The track is still private in Drive; Blender did not confirm a shared copy.');const sharedMediaRef=sharing.sharedFileId||null;
     stage='saving playlist membership';const {data:oldMemberships,error:oldMembershipError}=await stashAuth.from('stash_folder_tracks').select('folder_id').eq('track_id',t.id);if(oldMembershipError)throw oldMembershipError;
     for(const membership of oldMemberships||[])if(!folderIds.includes(membership.folder_id)){const {error}=await stashAuth.from('stash_folder_tracks').delete().eq('track_id',t.id).eq('folder_id',membership.folder_id);if(error)throw error;}
     for(const folderId of folderIds){const folderIsShared=folderId==='blender'||lists.find(f=>f.id===folderId)?.visibility==='public';const {error}=await stashAuth.from('stash_folder_tracks').upsert({folder_id:folderId,track_id:t.id,added_by:userId,shared_media_ref:folderIsShared?sharedMediaRef:null},{onConflict:'folder_id,track_id'});if(error)throw error;}
