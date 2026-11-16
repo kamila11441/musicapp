@@ -697,13 +697,13 @@ body.home-view #communityQuotes{flex:0 0 auto;width:min(760px,calc(100% - 32px))
 .community-quotes{padding:20px;border:1px solid color-mix(in srgb,var(--acc) 17%,var(--line));border-radius:26px;background:linear-gradient(145deg,color-mix(in srgb,var(--acc) 8%,#fff),#fff 72%);box-shadow:0 16px 40px -30px color-mix(in srgb,var(--acc) 23%,transparent),inset 0 1px 0 #fff}
 .community-quotes-head{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:13px}.community-quotes-head>div>span{color:var(--accent-deep);font:650 9px var(--mono);letter-spacing:.14em}.community-quotes-head h2{margin:5px 0 0;font-size:clamp(19px,5vw,25px);letter-spacing:-.045em}.quote-live-dot{width:10px;height:10px;border-radius:50%;background:var(--acc);box-shadow:0 0 0 5px var(--accent-soft)}
 .quote-latest{min-height:94px;padding:17px;border:1px solid color-mix(in srgb,var(--acc) 12%,#fff);border-radius:20px;background:#fff}
-.quote-latest blockquote{margin:0;color:#503b4b;font-size:clamp(16px,4.5vw,21px);font-weight:550;line-height:1.35;letter-spacing:-.025em;overflow-wrap:anywhere}.quote-byline{margin:9px 0 0;color:#856b7d;font-size:12px;font-weight:650}.quote-time{margin:5px 0 0;color:#a08998;font-size:10px}
+.quote-latest blockquote{margin:0;color:#503b4b;font-size:clamp(16px,4.5vw,21px);font-weight:550;line-height:1.35;letter-spacing:-.025em;overflow-wrap:anywhere}.quote-byline{margin:9px 0 0;color:#856b7d;font-size:12px;font-weight:650}.quote-submitter{margin:5px 0 0;color:#987f8d;font-size:10px;font-weight:600}.quote-time{margin:5px 0 0;color:#a08998;font-size:10px}
 .quote-board-actions{display:flex;gap:9px;margin-top:12px}.quote-board-actions button{flex:1;min-height:42px;padding:0 14px;border:1px solid color-mix(in srgb,var(--acc) 19%,var(--line));border-radius:999px;background:rgba(255,255,255,.8);font-size:12px;font-weight:650}.quote-board-actions #quoteAddOpen{background:var(--accent-deep);color:#fff;border-color:transparent}
 #quoteBoardStatus{min-height:1em;margin:8px 2px 0;color:var(--mut);font-size:10px;line-height:1.4}
 .quote-votes{display:flex;gap:7px;margin-top:12px}.quote-votes button{display:flex;align-items:center;gap:5px;min-height:31px;padding:0 11px;border:1px solid rgba(104,76,96,.13);border-radius:999px;background:rgba(255,255,255,.72);color:#775a6e;font-size:11px;font-weight:650}.quote-votes button[aria-pressed="true"]{border-color:color-mix(in srgb,var(--acc) 38%,#fff);background:var(--accent-soft);color:var(--accent-deep)}
 .quote-sheet{z-index:38}.quote-sheet-card{width:min(100%,500px);max-height:min(84dvh,760px);overflow:auto;padding:23px;border:1px solid color-mix(in srgb,var(--acc) 17%,var(--line));border-radius:28px;background:linear-gradient(145deg,#fff,color-mix(in srgb,var(--acc) 5%,#fff));color:var(--fg);box-shadow:0 30px 90px -35px rgba(0,0,0,.36)}.quote-sheet-card .dashboard-popup-head{gap:12px}.quote-sheet-card .dashboard-popup-head h2{margin:5px 0 0;font-size:24px;letter-spacing:-.05em}.quote-sheet-card .dashboard-popup-head button{flex:none;padding:0;line-height:1}
 .quote-form{display:grid;gap:13px;margin-top:20px}.quote-form label{display:grid;gap:6px;color:var(--mut);font-size:11px;font-weight:650}.quote-form textarea,.quote-form input{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:15px;background:rgba(255,255,255,.85);color:var(--fg);font:500 14px/1.45 var(--sans);user-select:text;-webkit-user-select:text}.quote-form textarea{min-height:116px;resize:vertical}.quote-form textarea:focus,.quote-form input:focus{border-color:var(--acc);outline:none;box-shadow:0 0 0 3px var(--accent-soft)}.quote-form p,.quote-all-panel>p{min-height:1em;margin:0;color:var(--mut);font-size:11px}.quote-submit{min-height:46px;border-radius:999px;background:var(--accent-deep);color:#fff;font-size:13px;font-weight:650}
-.quote-all-panel{margin-top:18px}.quote-all-list{display:grid;gap:9px;max-height:55dvh;overflow:auto;padding:1px 2px 8px}.quote-entry{padding:14px;border:1px solid color-mix(in srgb,var(--acc) 12%,var(--line));border-radius:17px;background:rgba(255,255,255,.82)}.quote-entry blockquote{margin:0;color:#503b4b;font-size:14px;line-height:1.45;overflow-wrap:anywhere}.quote-entry .quote-byline{margin-top:7px;font-size:11px}.quote-entry .quote-time{font-size:9px}.quote-entry .quote-votes{margin-top:9px}
+.quote-all-panel{margin-top:18px}.quote-all-list{display:grid;gap:9px;max-height:55dvh;overflow:auto;padding:1px 2px 8px}.quote-entry{padding:14px;border:1px solid color-mix(in srgb,var(--acc) 12%,var(--line));border-radius:17px;background:rgba(255,255,255,.82)}.quote-entry blockquote{margin:0;color:#503b4b;font-size:14px;line-height:1.45;overflow-wrap:anywhere}.quote-entry .quote-byline{margin-top:7px;font-size:11px}.quote-entry .quote-time{font-size:9px}.quote-entry .quote-submitter{font-size:9px}.quote-entry .quote-votes{margin-top:9px}
 @media(max-width:700px){.quote-sheet-card{width:100%;max-height:84dvh;padding:22px 20px calc(22px + env(safe-area-inset-bottom));border-radius:28px 28px 20px 20px}}
 .moodboard{padding:20px;border:1px solid color-mix(in srgb,#b56c8b 18%,var(--line));border-radius:26px;background:linear-gradient(145deg,color-mix(in srgb,#f2cbd9 58%,#fff),color-mix(in srgb,#eac8e4 35%,#fff) 58%,color-mix(in srgb,#f4e3ae 42%,#fff));box-shadow:0 16px 40px -30px rgba(116,65,92,.28),inset 0 1px 0 rgba(255,255,255,.8)}
 .moodboard-heading>span,.moodboard-panel-title>span{color:#a45f80;font:650 9px var(--mono);letter-spacing:.14em}
@@ -748,11 +748,15 @@ body.home-view #communityQuotes{flex:0 0 auto;width:min(760px,calc(100% - 32px))
 /* Keep the app viewport-sized; only the playlist shelf scrolls sideways. */
 html,body{width:100%;max-width:100%;overflow-x:hidden}
 body.home-view{width:100%;max-width:100%;min-width:0;overflow-x:clip}
-body.home-view>header,body.home-view>.home-dashboard,body.home-view>.dock,body.home-view>#list,body.home-view>#afterLibrary{box-sizing:border-box;width:100%;max-width:100%;min-width:0}
+body.home-view>header,body.home-view>.home-dashboard,body.home-view>#list,body.home-view>#afterLibrary{box-sizing:border-box;width:100%;max-width:100%;min-width:0}
+body.home-view>.dock{box-sizing:border-box;width:max-content;max-width:calc(100% - 28px);min-width:0;align-self:center}
 body.home-view #list:has(>.playlist-shelf-row){display:block;box-sizing:border-box;width:100%;max-width:100%;min-width:0;overflow-x:hidden;overflow-y:visible}
 body.home-view #list>.playlist-shelf-row{box-sizing:border-box;width:100%;max-width:100%;min-width:0;overflow:hidden}
-body.home-view #list .playlist-shelf{box-sizing:border-box;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x pan-y;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+body.home-view #list .playlist-shelf{box-sizing:border-box;display:flex;flex-flow:row nowrap;align-items:flex-start;width:100%;max-width:100%;min-width:0;overflow-x:auto;overflow-y:hidden;overscroll-behavior-x:contain;touch-action:pan-x;scrollbar-width:thin;scrollbar-color:color-mix(in srgb,var(--acc) 32%,transparent) transparent;-webkit-overflow-scrolling:touch}
+body.home-view #list .playlist-shelf::-webkit-scrollbar{display:block;height:4px}
+body.home-view #list .playlist-shelf::-webkit-scrollbar-thumb{border-radius:99px;background:color-mix(in srgb,var(--acc) 32%,transparent)}
 body.home-view #list .playlist-shelf>li[data-l]{flex:0 0 clamp(176px,58vw,230px);width:clamp(176px,58vw,230px);min-width:0}
+@media(hover:none){body.home-view #list .playlist-shelf>li[data-l]:active{background:transparent;transform:none}}
 </style>
 </head>
 <body>
@@ -761,7 +765,7 @@ body.home-view #list .playlist-shelf>li[data-l]{flex:0 0 clamp(176px,58vw,230px)
  <div class="welcome-main">
   <div class="welcome-art" id="welcomeArtworkSlot"><div class="welcome-disc" id="welcomeDisc" aria-hidden="true"><svg viewBox="0 0 360 320" fill="none" xmlns="http://www.w3.org/2000/svg"><defs><linearGradient id="artOrange" x1="66" y1="84" x2="282" y2="250" gradientUnits="userSpaceOnUse"><stop stop-color="#D78350"/><stop offset="1" stop-color="#A94F28"/></linearGradient><linearGradient id="artPlum" x1="188" y1="44" x2="274" y2="250" gradientUnits="userSpaceOnUse"><stop stop-color="#795A7D"/><stop offset="1" stop-color="#38283F"/></linearGradient><linearGradient id="artPearl" x1="94" y1="50" x2="172" y2="155" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF9EF"/><stop offset="1" stop-color="#E7CFC0"/></linearGradient></defs><ellipse cx="181" cy="273" rx="107" ry="16" fill="#523A57" fill-opacity=".12"/><ellipse cx="180" cy="158" rx="139" ry="83" stroke="#634F68" stroke-opacity=".22" stroke-width="1.5" transform="rotate(-31 180 158)"/><path d="M73 201C51 160 76 87 130 72c35-10 63 6 80 31 15 23 24 48 49 63 28 17 52 32 43 59-10 29-48 34-82 22-29-10-46-1-76 3-31 4-58-13-71-49Z" fill="url(#artOrange)"/><path d="M161 66c31-30 76-22 98 7 18 23 13 46 32 68 18 21 42 36 34 64-9 30-42 44-70 31-22-10-34-32-49-49-18-19-42-20-54-43-14-27-12-57 9-78Z" fill="url(#artPlum)"/><path d="M83 107c-4-27 16-48 42-47 24 1 40 20 38 43-2 20-18 39-38 40-21 1-39-16-42-36Z" fill="url(#artPearl)"/><path d="M66 219c35 34 85 44 127 23 35-17 53-49 85-63 22-10 43-8 59 3" stroke="#FFF9EF" stroke-opacity=".64" stroke-width="2" stroke-linecap="round"/><path d="M89 231c31 20 66 24 95 9 33-17 48-45 81-57" stroke="#FFF9EF" stroke-opacity=".36" stroke-width="1.5" stroke-linecap="round"/><circle cx="274" cy="70" r="7" fill="#C97944"/><circle cx="292" cy="91" r="3" fill="#634F68"/><path d="M271 52c7-10 17-15 29-14" stroke="#634F68" stroke-opacity=".55" stroke-width="1.5" stroke-linecap="round"/></svg></div></div>
   <div class="welcome-hello"><h2>Hello,</h2><button id="nameBtn" class="name-btn" type="button"><i class="plus" aria-hidden="true">+</i><span class="name-label">Add Name</span></button><input id="nameInput" class="name-input" type="text" maxlength="16" placeholder="Your name" aria-label="Your name" autocomplete="given-name" autocapitalize="words" enterkeyhint="done" hidden></div>
-  <p class="welcome-line">Make space <span>for sound.</span></p><button id="welcomeLogin" class="welcome-login" type="button">Sign in</button>
+  <p class="welcome-line">Make space <span>for sound.</span></p><p id="welcomeRegisteredCount" class="welcome-user-count" aria-live="polite" hidden></p><button id="welcomeLogin" class="welcome-login" type="button">Sign in</button>
  </div>
  <div class="welcome-actions"><button id="welcomeImport">Add music</button><button id="welcomeStart">Start listening</button></div>
 </section>
@@ -1132,7 +1136,7 @@ async function delList(id){
  const l=lists.find(x=>x.id===id);
  if(!l||!await stashConfirm('Delete playlist?',`“${l.name}” will be deleted. Its tracks move to Unsorted tracks.`,'Delete'))return;
  const ts=inList(id);
- await run(['meta','lists','blob'],'readwrite',(m,s,b)=>{ts.forEach(t=>{const folders=(t.folders|| (t.list?[t.list]:[])).filter(x=>x!==id);m.put({...t,folders,list:folders[0]||''})});s.put({...l,deleted_local:true});b.delete('c:'+id)});
+ await run(['meta','lists','blob'],'readwrite',(m,s,b)=>{ts.forEach(t=>{const folders=(t.folders|| (t.list?[t.list]:[])).filter(x=>x!==id);m.put({...t,folders,list:folders[0]||'',cloud_synced:false,updated_at:new Date().toISOString()})});s.put({...l,deleted_local:true});b.delete('c:'+id)});
  if(cov[id]){URL.revokeObjectURL(cov[id]);delete cov[id]}
  await load();queueCloudSync();
  if(ts.some(t=>t.id===pid)){pl='';setMeta(all.find(t=>t.id===pid));renderPlayer()}
@@ -1173,7 +1177,7 @@ async function add(files){
 async function delTrack(t){
  if(!await stashConfirm('Delete track?',`“${t.name}” will be removed from your library.`,'Delete'))return;
  const userId=stashAccountSession?.user?.id;if(t.owner_id&&t.owner_id!==userId){await stashAlert('Track can’t be deleted','Only the person who added this track can delete it.');return}
- await run(['meta','blob'],'readwrite',(m,b)=>{if(t.owner_id&&t.cloud_synced)m.put({...t,deleted_local:true});else m.delete(t.id);b.delete(t.id);b.delete('a:'+t.id)});
+ await run(['meta','blob'],'readwrite',(m,b)=>{if(t.owner_id===userId)m.put({...t,deleted_local:true});else m.delete(t.id);b.delete(t.id);b.delete('a:'+t.id)});
  if(trackCov[t.id]){URL.revokeObjectURL(trackCov[t.id]);delete trackCov[t.id]}
  if(t.id===pid){playToken++;au.pause();au.removeAttribute('src');au.load();if(url)URL.revokeObjectURL(url);url=null;pid=null;document.body.classList.remove('playing');$('#playerScreen').hidden=true}
  await load();queueCloudSync();
@@ -1248,18 +1252,18 @@ function revealAfterLibrary(){
 }
 function quoteTimestamp(value){const date=new Date(value);return Number.isNaN(date.getTime())?'':new Intl.DateTimeFormat(undefined,{dateStyle:'medium',timeStyle:'short'}).format(date)}
 function quoteVoteControls(quote){const vote=quoteVoteStats[quote.id]||{up_count:0,down_count:0,my_vote:0};return `<div class="quote-votes"><button type="button" data-quote-vote="1" data-quote-id="${quote.id}" aria-label="Like quote" aria-pressed="${Number(vote.my_vote)===1}">↑ <span>${Number(vote.up_count)||0}</span></button><button type="button" data-quote-vote="-1" data-quote-id="${quote.id}" aria-label="Dislike quote" aria-pressed="${Number(vote.my_vote)===-1}">↓ <span>${Number(vote.down_count)||0}</span></button></div>`}
-function quoteEntry(quote){return `<article class="quote-entry"><blockquote>“${esc(quote.quote_text)}”</blockquote><p class="quote-byline">— ${esc(quote.quote_author)}</p><p class="quote-time">${quoteTimestamp(quote.created_at)}</p>${quoteVoteControls(quote)}</article>`}
+function quoteEntry(quote){return `<article class="quote-entry"><blockquote>“${esc(quote.quote_text)}”</blockquote><p class="quote-byline">— ${esc(quote.quote_author)}</p><p class="quote-submitter">Shared by ${esc(quote.submitted_by_name||'Stash member')}</p><p class="quote-time">${quoteTimestamp(quote.created_at)}</p>${quoteVoteControls(quote)}</article>`}
 function renderQuoteAll(){const list=$('#quoteAllList');if(!list)return;list.innerHTML=communityQuotes.map(quoteEntry).join('')||'<p class="quote-empty">No quotes yet. Add the first one.</p>';$('#quoteAllStatus').textContent=quoteLoadError||(!stashAccountSession?'Sign in to view and vote on community quotes.':'')}
 function renderCommunityQuotes(){
  const latestRoot=$('#quoteLatest');if(!latestRoot)return;
  if(!stashAccountSession?.user){latestRoot.innerHTML='<p class="quote-empty">Sign in to read and share lines with the Stash community.</p>';$('#quoteBoardStatus').textContent='Quotes and votes are shared between signed-in Stash users.';return}
- const latest=communityQuotes[0];latestRoot.innerHTML=latest?`<blockquote>“${esc(latest.quote_text)}”</blockquote><p class="quote-byline">— ${esc(latest.quote_author)}</p><p class="quote-time">${quoteTimestamp(latest.created_at)}</p>${quoteVoteControls(latest)}`:'<p class="quote-empty">Be the first to leave a line for the community.</p>';
+ const latest=communityQuotes[0];latestRoot.innerHTML=latest?`<blockquote>“${esc(latest.quote_text)}”</blockquote><p class="quote-byline">— ${esc(latest.quote_author)}</p><p class="quote-submitter">Shared by ${esc(latest.submitted_by_name||'Stash member')}</p><p class="quote-time">${quoteTimestamp(latest.created_at)}</p>${quoteVoteControls(latest)}`:'<p class="quote-empty">Be the first to leave a line for the community.</p>';
  $('#quoteBoardStatus').textContent=quoteLoadError||`${communityQuotes.length} ${communityQuotes.length===1?'quote':'quotes'} shared by Stash users.`;
  if(!$('#quoteSheet').hidden&&quoteSheetMode==='all')renderQuoteAll();
 }
 async function loadCommunityQuotes(){
  if(!stashAuth||!stashAccountSession?.user){communityQuotes=[];quoteVoteStats={};quoteLoadError='';renderCommunityQuotes();return}
- const {data,error}=await stashAuth.from('stash_quotes').select('id,quote_text,quote_author,created_at').order('created_at',{ascending:false}).limit(100);
+ const {data,error}=await stashAuth.from('stash_quotes').select('id,quote_text,quote_author,submitted_by_name,created_at').order('created_at',{ascending:false}).limit(100);
  if(error){communityQuotes=[];quoteVoteStats={};quoteLoadError='Quote board setup is not installed yet. Run setup-stash-community-quotes.sql in Supabase.';renderCommunityQuotes();return}
  communityQuotes=data||[];quoteVoteStats={};
  if(communityQuotes.length){const {data:votes,error:voteError}=await stashAuth.rpc('stash_quote_vote_summary');if(voteError)quoteLoadError='Run setup-stash-community-quotes.sql to enable quote voting.';else{quoteLoadError='';for(const row of votes||[])quoteVoteStats[row.quote_id]={up_count:Number(row.up_count)||0,down_count:Number(row.down_count)||0,my_vote:Number(row.my_vote)||0}}}else quoteLoadError='';
@@ -1417,7 +1421,7 @@ function syncAccountUI(){
 function setDriveStatus(message){$('#driveStatus').textContent=message}
 async function loadStashUserCount(){
  if(!stashAuth)return;const {data,error}=await stashAuth.rpc('stash_user_count');if(error||data==null)return;
- const count=Number(data);if(!Number.isFinite(count))return;const label=$('#welcomeUserCount');label.innerHTML=`<strong>${count.toLocaleString()}</strong> Stash ${count===1?'member':'members'}`;label.hidden=false;
+ const count=Number(data);if(!Number.isFinite(count))return;const copy=`<strong>${count.toLocaleString()}</strong> Stash ${count===1?'member':'members'}`;for(const selector of ['#welcomeUserCount','#welcomeRegisteredCount']){const label=$(selector);if(label){label.innerHTML=copy;label.hidden=false}}
 }
 function updateOnlineCount(count){const label=$('#welcomeOnlineCount');if(!label)return;label.innerHTML=`<strong>${Number(count)||0}</strong> online now`;label.hidden=false}
 function getStashPresenceKey(){try{let key=localStorage.getItem('stash-presence-device');if(!key){key=crypto.randomUUID();localStorage.setItem('stash-presence-device',key)}return key}catch{return `stash-${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`}}
@@ -1538,11 +1542,12 @@ async function syncStashCloud(){
    if(track.owner_id===userId){await stashDriveCall('delete-track-files',{trackId:track.id});const {error}=await stashAuth.from('stash_tracks').delete().eq('id',track.id).eq('owner_id',userId);if(error)throw error;}
    await run(['meta','blob'],'readwrite',(m,b)=>{m.delete(track.id);b.delete(track.id);b.delete('a:'+track.id)});
   }
-  for(const folder of localFolders.filter(f=>!f.deleted_local&&f.id&&f.id!=='blender'&&(!f.owner_id||f.owner_id===userId))){
+  const changedFolders=localFolders.filter(f=>!f.deleted_local&&f.cloud_synced!==true&&f.id&&f.id!=='blender'&&(!f.owner_id||f.owner_id===userId));
+  for(const folder of changedFolders){
    const coverBlob=await run(['blob'],'readonly',b=>b.get('c:'+folder.id)),cover_data=coverBlob?await blobToDataUrl(coverBlob):(folder.cover_data||null);
    const folderUpdatedAt=new Date().toISOString(),{error}=await stashAuth.from('stash_folders').upsert({id:folder.id,owner_id:userId,name:folder.name,mood_tags:folder.mood_tags||[],sort_order:Number(folder.order)||0,pinned:Boolean(folder.pinned),cover_data,owner_name:folder.visibility==='public'?(stashAccountProfile?.display_name||'Stash member'):null,visibility:folder.visibility==='public'?'public':'private',updated_at:folderUpdatedAt},{onConflict:'id'});if(error)throw error;await run(['lists'],'readwrite',store=>store.put({...folder,owner_id:userId,sort_order:Number(folder.order)||0,cover_data,cloud_synced:true,updated_at:folderUpdatedAt}));
   }
- const ownTracks=localTracks.filter(t=>!t.deleted_local&&(!t.owner_id||t.owner_id===userId)),syncFailures=[];let syncedCount=0,audioReadyCount=0;
+ const ownTracks=localTracks.filter(t=>!t.deleted_local&&t.cloud_synced!==true&&(!t.owner_id||t.owner_id===userId)),syncFailures=[];let syncedCount=0,audioReadyCount=0;
  for(let index=0;index<ownTracks.length;index++){
    const t=ownTracks[index];let stage='reading local audio';setDriveStatus(`Syncing track ${index+1} of ${ownTracks.length}: ${t.name||'Untitled'}…`);
    try{
@@ -1550,12 +1555,16 @@ async function syncStashCloud(){
     const folderIds=[...new Set((Array.isArray(t.folders)&&t.folders.length?t.folders:(t.list?[t.list]:[])).filter(Boolean))],cover_data=coverBlob?await blobToDataUrl(coverBlob):(t.cover_data||null);
     stage='saving track details';const trackRow={id:t.id,owner_id:userId,name:t.name||'Untitled',author:t.author||'',file_name:t.file_name||`${t.name||'track'}.audio`,mime_type:t.mime_type||blob?.type||'application/octet-stream',byte_size:blob?.size||t.byte_size||0,duration_seconds:t.duration_seconds||null,lyrics:t.lyrics||null,play_count:Number(t.play_count)||0,sort_order:Number(t.order)||0,primary_folder_id:t.list||folderIds[0]||'',cover_data,updated_at:new Date().toISOString()};
     const {error:trackError}=await stashAuth.from('stash_tracks').upsert(trackRow,{onConflict:'id'});if(trackError)throw trackError;
-    stage='checking R2 for this track';let fileInfo=null;const status=await stashDriveCall('r2-track-status',{trackId:t.id});
-    if(status.uploaded){fileInfo=status;audioReadyCount++}
+    let fileInfo=null;
+    if(t.media_provider==='r2'&&t.media_ref){fileInfo={objectKey:t.media_ref};audioReadyCount++}
     else{
-     if(!blob&&status.legacyAvailable){stage='pulling this track from Drive for migration';blob=await downloadStashAudio(t.id,folderIds.find(id=>id==='blender')||folderIds[0]||'');await run(['blob'],'readwrite',store=>store.put(blob,t.id))}
-     if(blob){stage='uploading audio to R2';fileInfo=await uploadR2File(blob,trackRow.mime_type,t.id);audioReadyCount++}
-     else throw new Error(`“${t.name||'Untitled'}” has no local audio or saved Drive file to migrate. Re-import the audio file, then sync again.`);
+     stage='checking R2 for this changed track';const status=await stashDriveCall('r2-track-status',{trackId:t.id});
+     if(status.uploaded){fileInfo=status;audioReadyCount++}
+     else{
+      if(!blob&&status.legacyAvailable){stage='pulling this track from Drive for migration';blob=await downloadStashAudio(t.id,folderIds.find(id=>id==='blender')||folderIds[0]||'');await run(['blob'],'readwrite',store=>store.put(blob,t.id))}
+      if(blob){stage='uploading audio to R2';fileInfo=await uploadR2File(blob,trackRow.mime_type,t.id);audioReadyCount++}
+      else throw new Error(`“${t.name||'Untitled'}” has no local audio or saved Drive file to migrate. Re-import the audio file, then sync again.`);
+     }
     }
     stage='sharing the track with its playlists';const sharing=await stashDriveCall('set-sharing',{trackId:t.id,folderIds});if(folderIds.includes('blender')&&(!sharing.sharedFileId||!sharing.shareFolderIds?.includes('blender')))throw new Error('R2 did not confirm the shared Blender track.');const sharedMediaRef=sharing.sharedFileId||null;
     stage='saving playlist membership';const {data:oldMemberships,error:oldMembershipError}=await stashAuth.from('stash_folder_tracks').select('folder_id').eq('track_id',t.id);if(oldMembershipError)throw oldMembershipError;
@@ -1564,7 +1573,7 @@ async function syncStashCloud(){
     await run(['meta'],'readwrite',m=>m.put({...t,owner_id:userId,media_ref:fileInfo?.objectKey||t.media_ref,media_provider:'r2',cloud_synced:true,updated_at:trackRow.updated_at,sort_order:trackRow.sort_order,primary_folder_id:trackRow.primary_folder_id,cover_data,shared_media_ref:sharedMediaRef,folders:folderIds,list:folderIds.includes(t.list)?t.list:(folderIds[0]||'')}));syncedCount++;
    }catch(error){syncFailures.push(`${t.name||'Untitled'} (${stage}): ${error.message||'sync failed'}`)}
   }
-  let refreshError=null;try{await loadRemoteStashMetadata();await load()}catch(error){refreshError=error}if(syncFailures.length)throw new Error(`R2 audio ready for ${audioReadyCount} of ${ownTracks.length} tracks; ${syncedCount} fully synced. ${syncFailures.slice(0,3).join(' · ')}${syncFailures.length>3?` · and ${syncFailures.length-3} more`:''}${refreshError?` · Library refresh: ${refreshError.message||'failed'}`:''}`);if(refreshError){setDriveStatus(`Synced ${syncedCount} tracks. This device could not refresh its library: ${refreshError.message||'please reload'}`);return}setDriveStatus(`Synced ${syncedCount} tracks to R2. Blender and public playlists reference the same audio object.`);
+  let refreshError=null;try{await loadRemoteStashMetadata();await load()}catch(error){refreshError=error}if(syncFailures.length)throw new Error(`R2 audio ready for ${audioReadyCount} of ${ownTracks.length} changed tracks; ${syncedCount} fully synced. ${syncFailures.slice(0,3).join(' · ')}${syncFailures.length>3?` · and ${syncFailures.length-3} more`:''}${refreshError?` · Library refresh: ${refreshError.message||'failed'}`:''}`);if(refreshError){setDriveStatus(`Synced ${syncedCount} changed tracks. This device could not refresh its library: ${refreshError.message||'please reload'}`);return}if(!syncedCount&&!changedFolders.length)setDriveStatus('Everything is up to date. No changes needed syncing.');else setDriveStatus(`Synced ${syncedCount} changed tracks and ${changedFolders.length} changed playlists. Already-synced audio was left alone.`);
  }finally{cloudSyncing=false;syncAccountUI();autoSyncPending=false}
 }
 function queueCloudSync(delay=1400){
