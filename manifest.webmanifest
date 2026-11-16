@@ -1,1 +1,12 @@
-{"name":"Stash","short_name":"Stash","start_url":"./","scope":"./","display":"standalone","background_color":"#ededeb","theme_color":"#202020","icons":[{"src":"icon.png","sizes":"512x512","type":"image/png"}]}
+{
+  "name": "Stash",
+  "short_name": "Stash",
+  "start_url": "./stash.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f7f7f5",
+  "theme_color": "#f7f7f5",
+  "icons": [
+    { "src": "./stash.JPEG", "type": "image/jpeg", "purpose": "any maskable" }
+  ]
+}
